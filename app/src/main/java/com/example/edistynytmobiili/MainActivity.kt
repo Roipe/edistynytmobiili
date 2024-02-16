@@ -21,7 +21,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.edistynytmobiili.ui.theme.EdistynytMobiiliTheme
+import com.example.edistynytmobiili.viewmodel.LoginViewModel
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -42,18 +44,25 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun LoginScreen(){
+    //viewModel huolehtii siitä, että tiedot säilytetään konfiguraatiomuutoksien yhteydessä
+    val loginVm: LoginViewModel = viewModel()
+
     Column(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
 
-    ) {
-        OutlinedTextField(value = "", onValueChange = { newUsername ->
+    ) {//Tekstikentän valueksi saadaan LoginViewModelissa määritellyn loginStaten arvo,
+        // joka rakennetaan Login data classin avulla
+        OutlinedTextField(value = loginVm.loginState.value.username, onValueChange = { newUsername ->
+            //View modelista kutsutaan funktiota muuttamaan usernamea
+            loginVm.setUsername(newUsername)
         }, placeholder = {
             Text(text="Username")
         })
         Spacer(modifier = Modifier.height(16.dp))
-        OutlinedTextField(value = "",
+        OutlinedTextField(value = loginVm.loginState.value.password,
             onValueChange = { newPassword ->
+                loginVm.setPassword(newPassword)
         }, placeholder = {
             Text(text="Password")
         }, visualTransformation = PasswordVisualTransformation(),
