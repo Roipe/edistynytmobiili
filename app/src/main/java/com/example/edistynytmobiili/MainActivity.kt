@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -70,11 +71,24 @@ class MainActivity : ComponentActivity() {
                                     label = { Text(text = "Categories")},
                                     //Oletusikkunassa selected = true
                                     selected = true,
-                                    onClick = {},
+                                    onClick = { scope.launch { drawerState.close()}},
                                     icon = {
                                         Icon(
                                             imageVector = Icons.Filled.Home,
                                             contentDescription = "Home"
+                                        )
+                                    })
+                                NavigationDrawerItem(
+                                    label = { Text(text = "Login")},
+                                    //Oletusikkunassa selected = true
+                                    selected = false,
+                                    onClick = { scope.launch {
+                                        navController.navigate("loginScreen")
+                                        drawerState.close()} },
+                                    icon = {
+                                        Icon(
+                                            imageVector = Icons.Filled.Lock,
+                                            contentDescription = "Login"
                                         )
                                     })
                             }
@@ -82,6 +96,7 @@ class MainActivity : ComponentActivity() {
                         ) {
 
                         NavHost(navController = navController, startDestination = "categoriesScreen") {
+                            //Navigoinnin mahdollistamiseksi NavHostiin tulee lisätä kohteille composablet
                             composable(route = "categoriesScreen") {
                                 /*onMenuClick-callbackillä menu iconia painamalla avataan drawer.
                                 Käytännössä CategoriesScreenin koodissa tehty "Click-listener" kutsuu seuraavaa toimenpidettä
@@ -104,6 +119,16 @@ class MainActivity : ComponentActivity() {
                                     }
                                 })
                                 //Näin CategoriesScreenillä ei tarvitse olla erikseen tietoa drawerin tilasta, jota MainActivity hallinnoi.
+                            }
+
+                            //Composable loginScreenin navigointireittiä varten
+                            composable(route = "loginScreen") {
+                                /*
+                                LoginScreenille annetaan lambda-argumentti, jolla käytännössä välitetään navigointiohjeet sille.
+                                Tällä callback-funktiolla Nav Controlleria ei tarvitse erikseen määritellä tai kutsua LoginScreenin koodissa,
+                                sillä ohjeet välitetään tämän kautta.
+                                */
+                                LoginScreen(goToCategories = { navController.navigate("categoriesScreen") })
                             }
                         }
 

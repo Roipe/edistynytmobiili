@@ -32,7 +32,7 @@ class LoginViewModel : ViewModel() {
 
     fun login() {
 
-        /*Tässä halutaan kutsua ylläolevaa suspend-funktiota.
+        /*Tässä halutaan kutsua ylläolevaa suspend-funktiota. Suspend-funktiot ovat funktiota, joita tarvitsee odottaa. Esim. rajapintakutsut.
         Suspend funktiota ei voi kuitenkaan kutsua muuten, kuin toisen suspend-funktion tai coroutinen sisältä
         suspend-funktiota kutsutaan siis viewModelScope-coroutinella, joka periytyy ViewModel()-luokasta
         Tämän scopen avulla kerrotaan ohjelmalle, mihin data tulisi palauttaa.

@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
@@ -20,19 +21,21 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.edistynytmobiili.viewmodel.LoginViewModel
 
 @Composable
-fun LoginScreen(){
+//Loginscreenin argumentteihin navigointia varten callback-funktio
+fun LoginScreen(goToCategories: () -> Unit) {
     //viewModel huolehtii siitä, että tiedot säilytetään konfiguraatiomuutoksien yhteydessä
     val loginVm: LoginViewModel = viewModel()
     /*Jotta saadaan latausikoni keskitettyä, se tarvii jonkun viitteen, johon se vertaa, eikä tätä voi suoraan
-    surfacesta tehdä. Lisätään siis box, joka pitää sisällään haluttu sisältö.
-    Box keskitetään keskelle surfacea contentAlignmentillä*/
-    Box(contentAlignment = Alignment.Center) {
+    surfacesta tehdä. Lisätään siis box, joka pitää sisällään halutun sisällön.
+    */
+    Box(modifier = Modifier.fillMaxSize()) {
         //Kun todetaan sovelluksen olevan lataustilassa, näytetään keskellä näyttöä latausikoni
         when {
             loginVm.loginState.value.loading -> CircularProgressIndicator(modifier = Modifier.align(
                 Alignment.Center))
             //Muissa tapauksissa näytetään tavallinen sisältö; Username- ja Password-tekstikentät sekä Login-nappi
             else -> Column(
+                modifier = Modifier.fillMaxSize(),
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally,
 
@@ -62,8 +65,11 @@ fun LoginScreen(){
                     //Nappi on aktiivinen vain, kun sekä username- ja password-kentissä on sisältöä
                     enabled = loginVm.loginState.value.username != "" && loginVm.loginState.value.password != "",
                     //Nappia painettaessa kutsutaan ViewModelin login-funktiota
-                    onClick = { loginVm.login() }
-                ) {
+                    onClick = {
+                        loginVm.login()
+                        //Kutsutaan callback-funktiota, jonka avulla toteutetaan navigointi oikeaan kohteeseen
+                        goToCategories()
+                    }) {
                     Text(text = "Login")
                 }
             }
