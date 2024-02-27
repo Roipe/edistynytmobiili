@@ -10,21 +10,22 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.edistynytmobiili.MainActivity
 import com.example.edistynytmobiili.viewmodel.CategoriesViewModel
 import kotlinx.coroutines.launch
 
@@ -47,7 +48,9 @@ fun CategoriesScreen(onMenuClick: () -> Unit) {
             )
         }
     ){
-        Box(modifier = Modifier.fillMaxSize().padding(it)) {
+        Box(modifier = Modifier
+            .fillMaxSize()
+            .padding(it)) {
             when {
                 categoriesVm.categoriesState.value.loading -> CircularProgressIndicator(
                     modifier = Modifier.align(Alignment.Center)
@@ -56,11 +59,32 @@ fun CategoriesScreen(onMenuClick: () -> Unit) {
                 else -> LazyColumn() {
                     items(categoriesVm.categoriesState.value.list) {
                         Column(modifier = Modifier.fillMaxWidth()) {
-                            Row (Modifier.fillMaxWidth().padding(8.dp),
+                            Row (
+                                Modifier
+                                    .fillMaxWidth()
+                                    .padding(8.dp),
                                 horizontalArrangement = Arrangement.SpaceBetween){
                                 Text("Kuva tähän myöhemmin")
                                 Column(horizontalAlignment = Alignment.End) {
-                                    Text(text = it.name, fontWeight = FontWeight.ExtraBold)
+                                    Text(
+                                        text = it.category_name,
+                                        style = MaterialTheme.typography.headlineSmall,
+                                        maxLines = 1
+                                    )
+                                    Row {
+                                        IconButton(onClick = { /*TODO*/ }) {
+                                            Icon(
+                                                imageVector = Icons.Default.Edit,
+                                                contentDescription = "Edit"
+                                            )
+                                        }
+                                        IconButton(onClick = { /*TODO*/ }) {
+                                            Icon(
+                                                imageVector = Icons.Default.Delete,
+                                                contentDescription = "Delete"
+                                            )
+                                        }
+                                    }
                                 }
                             }
 

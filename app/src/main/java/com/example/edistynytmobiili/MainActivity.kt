@@ -95,7 +95,7 @@ class MainActivity : ComponentActivity() {
                         },
                         ) {
 
-                        NavHost(navController = navController, startDestination = "categoriesScreen") {
+                            NavHost(navController = navController, startDestination = "categoriesScreen") {
                             //Navigoinnin mahdollistamiseksi NavHostiin tulee lisätä kohteille composablet
                             composable(route = "categoriesScreen") {
                                 /*onMenuClick-callbackillä menu iconia painamalla avataan drawer.
