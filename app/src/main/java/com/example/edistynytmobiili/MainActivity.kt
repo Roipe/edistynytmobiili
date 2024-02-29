@@ -40,6 +40,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.edistynytmobiili.ui.theme.EdistynytMobiiliTheme
 import com.example.edistynytmobiili.view.CategoriesScreen
+import com.example.edistynytmobiili.view.EditCategoryScreen
 import com.example.edistynytmobiili.view.LoginScreen
 import kotlinx.coroutines.launch
 
@@ -96,43 +97,54 @@ class MainActivity : ComponentActivity() {
                         ) {
 
                             NavHost(navController = navController, startDestination = "categoriesScreen") {
-                            //Navigoinnin mahdollistamiseksi NavHostiin tulee lisätä kohteille composablet
-                            composable(route = "categoriesScreen") {
-                                /*onMenuClick-callbackillä menu iconia painamalla avataan drawer.
-                                Käytännössä CategoriesScreenin koodissa tehty "Click-listener" kutsuu seuraavaa toimenpidettä
-                                ikonia painaessa:
-                                 */
-                                CategoriesScreen(onMenuClick = {
-                                    scope.launch {
-                                        /*
-                                        if (drawerState.isClosed) {
-                                            drawerState.open()
+                                //Navigoinnin mahdollistamiseksi NavHostiin tulee lisätä kohteille composablet
+                                composable(route = "categoriesScreen") {
+                                    /*onMenuClick-callbackillä menu iconia painamalla avataan drawer.
+                                    Käytännössä CategoriesScreenin koodissa tehty "Click-listener" kutsuu seuraavaa toimenpidettä
+                                    ikonia painaessa:
+                                     */
+                                    CategoriesScreen(onMenuClick = {
+                                        scope.launch {
+                                            /*
+                                            if (drawerState.isClosed) {
+                                                drawerState.open()
+                                            }
+                                            else {
+                                                drawerState.close()
+                                            }
+                                             */
+                                            //Voidaan lyhentää .apply:llä
+                                            drawerState.apply {
+                                                if (isClosed) open() else close()
+                                            }
                                         }
-                                        else {
-                                            drawerState.close()
-                                        }
-                                         */
-                                        //Voidaan lyhentää .apply:llä
-                                        drawerState.apply {
-                                            if (isClosed) open() else close()
-                                        }
-                                    }
-                                })
-                                //Näin CategoriesScreenillä ei tarvitse olla erikseen tietoa drawerin tilasta, jota MainActivity hallinnoi.
+                                    },  //Näin CategoriesScreenillä ei tarvitse olla erikseen tietoa drawerin tilasta, jota MainActivity hallinnoi.
+
+                                        //Navigoinnissa voidaan välittää parametri lisäämällä routen perään kenoviiva ja itse parametri.
+                                        goToEditCategory = { navController.navigate("editCategoryScreen/${it}") }
+                                    )
+
+                                }
+
+                                //Composable loginScreenin navigointireittiä varten
+                                composable(route = "loginScreen") {
+                                    /*
+                                    LoginScreenille annetaan lambda-argumentti, jolla käytännössä välitetään navigointiohjeet sille.
+                                    Tällä callback-funktiolla Nav Controlleria ei tarvitse erikseen määritellä tai kutsua LoginScreenin koodissa,
+                                    sillä ohjeet välitetään tämän kautta.
+                                    */
+                                    LoginScreen(goToCategories = { navController.navigate("categoriesScreen") })
+                                }
+                                //Parametriä vastaanottavalle routelle lisätään "wild card" merkintä routen perään.
+                                //Tällä tunnisteella vastaanottavassa ViewModelissa haetaan parametri savedStateHandlesta.
+                                composable(route = "editCategoryScreen/{categoryId}") {
+                                EditCategoryScreen()
+
+                                }
+
                             }
 
-                            //Composable loginScreenin navigointireittiä varten
-                            composable(route = "loginScreen") {
-                                /*
-                                LoginScreenille annetaan lambda-argumentti, jolla käytännössä välitetään navigointiohjeet sille.
-                                Tällä callback-funktiolla Nav Controlleria ei tarvitse erikseen määritellä tai kutsua LoginScreenin koodissa,
-                                sillä ohjeet välitetään tämän kautta.
-                                */
-                                LoginScreen(goToCategories = { navController.navigate("categoriesScreen") })
-                            }
                         }
-
-                    }
                 }
             }
         }

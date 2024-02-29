@@ -34,7 +34,9 @@ class CategoriesViewModel : ViewModel() {
                 val response = categoriesService.getCategories()
                 //Kopioidaan vastauksesta kategoriat
                 _categoriesState.value = categoriesState.value.copy(list = response.categories)
+            //Virheiden varalta tallennetaan error message
             } catch(e: Exception) {
+                _categoriesState.value = _categoriesState.value.copy(errorMsg = e.message)
             } finally {
                 //Asetetaan sivu pois lataustilasta
                 _categoriesState.value = categoriesState.value.copy(loading = false)
