@@ -33,13 +33,13 @@ class CategoriesViewModel : ViewModel() {
                 //Tallennetaan muuttujaan Api-pyynnöstä saatava vastaus
                 val response = categoriesService.getCategories()
                 //Kopioidaan vastauksesta kategoriat
-                _categoriesState.value = categoriesState.value.copy(list = response.categories)
+                _categoriesState.value = _categoriesState.value.copy(list = response.categories)
             //Virheiden varalta tallennetaan error message
             } catch(e: Exception) {
                 _categoriesState.value = _categoriesState.value.copy(errorMsg = e.message)
             } finally {
                 //Asetetaan sivu pois lataustilasta
-                _categoriesState.value = categoriesState.value.copy(loading = false)
+                _categoriesState.value = _categoriesState.value.copy(loading = false)
             }
         }
     }

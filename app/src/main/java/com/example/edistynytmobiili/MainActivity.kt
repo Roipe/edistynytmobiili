@@ -135,10 +135,13 @@ class MainActivity : ComponentActivity() {
                                     */
                                     LoginScreen(goToCategories = { navController.navigate("categoriesScreen") })
                                 }
-                                //Parametriä vastaanottavalle routelle lisätään "wild card" merkintä routen perään.
+                                //Parametriä vastaanottavalle routelle lisätään "wild card" merkintä routen perään
                                 //Tällä tunnisteella vastaanottavassa ViewModelissa haetaan parametri savedStateHandlesta.
                                 composable(route = "editCategoryScreen/{categoryId}") {
-                                EditCategoryScreen()
+                                EditCategoryScreen(
+                                    backToCategories = { navController.navigateUp() },
+                                    goToCategories = { navController.navigate("categoriesScreen") }
+                                )
 
                                 }
 

@@ -11,6 +11,7 @@ data class CategoryState(
     //itemin default arvo on tyhjä CategoryItem (ei annettuja arvoja, joten id = 0, name = "")
     val item: CategoryItem = CategoryItem(),
     val loading: Boolean = false,
+    val ok: Boolean = false,
     val errorMsg: String? = null
 )
 
@@ -23,3 +24,9 @@ data class CategoryItem(
 //Backendin vastausta varten tehdään data class, jossa muuttuja, johon listataan yksittäisiä kategorioita
 //Tämän parametri nimetään backendin JSON-tiedostossa vastaavan listauksen nimen mukaiseksi, jotta Gson osaa kääntää tämän.
 data class CategoriesResponse(val categories: List<CategoryItem> = emptyList())
+data class CategoryResponse(val category: CategoryItem = CategoryItem())
+
+data class SaveCategoryReq(
+    @SerializedName("category_name")
+    val name: String = ""
+)
