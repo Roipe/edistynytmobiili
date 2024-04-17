@@ -1,5 +1,6 @@
 package com.example.edistynytmobiili.view
 
+import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -13,20 +14,25 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FabPosition
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -52,9 +58,20 @@ fun RandomImage() {
 }
 
 @Composable
-fun ConfirmCategoryDelete(onConfirm : () -> Unit, onCancel: () -> Unit) {
+fun ConfirmCategoryDelete(onConfirm : () -> Unit, onCancel: () -> Unit, clearError: () -> Unit, errorString: String?){
+
+    val context = LocalContext.current
+
+    LaunchedEffect(key1 = errorString) {
+        //letin avulla voidaan suorittaa koodiblock mikäli nullable-arvo on jotain muuta kuin null.
+        errorString?.let {
+            Toast.makeText(context, it, Toast.LENGTH_LONG).show()
+            clearError()
+        }
+    }
+
     AlertDialog(
-        title = {Text("Confirm deletion")},
+        title = {Text("Are you sure?")},
         text = { Text("Are you sure you want to delete the category?") },
         onDismissRequest = { /*TODO*/ },
         confirmButton = {
@@ -69,10 +86,47 @@ fun ConfirmCategoryDelete(onConfirm : () -> Unit, onCancel: () -> Unit) {
     )
 }
 
+@Composable
+fun AddCategoryDialog(onConfirm: () -> Unit, onCancel: () -> Unit, name: String, setName : (String) -> Unit, clearError: () -> Unit, errorString: String?) {
+    val context = LocalContext.current
+    LaunchedEffect(key1 = errorString) {
+        //letin avulla voidaan suorittaa koodiblock mikäli nullable-arvo on jotain muuta kuin null.
+        errorString?.let {
+            Toast.makeText(context, it, Toast.LENGTH_LONG).show()
+            clearError()
+        }
+    }
+
+    AlertDialog(
+        title = {Text("Add category")},
+        text = {
+            Column() {
+                Text("Category name")
+                OutlinedTextField(
+                    value = name,
+                    onValueChange = { newValue ->
+                        setName(newValue)
+                    }
+                )
+            }  },
+        onDismissRequest = { /*TODO*/ },
+        confirmButton = {
+            TextButton(onClick = { onConfirm() }) {
+                Text("Add Category")
+            }
+        }, dismissButton = {
+            TextButton(onClick = { onCancel() }) {
+                Text("Cancel")
+            }
+        }
+    )
+}
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CategoriesScreen(onMenuClick: () -> Unit, goToEditCategory : (Int) -> Unit) {
     val categoriesVm: CategoriesViewModel = viewModel()
+
     //Scaffoldilla hallitaan erilaisia UI:n osia, kuten app bareja ja floating action buttoneita
     Scaffold(
         topBar = {
@@ -86,6 +140,12 @@ fun CategoriesScreen(onMenuClick: () -> Unit, goToEditCategory : (Int) -> Unit) 
                 }
 
             )
+        },
+        floatingActionButtonPosition = FabPosition.Center,
+        floatingActionButton = {
+            FloatingActionButton(onClick = { categoriesVm.toggleAddDialog(true) }) {
+                Icon(imageVector = Icons.Filled.Add, contentDescription = "Add Category")
+            }
         }
     ){
         Box(modifier = Modifier
@@ -101,7 +161,18 @@ fun CategoriesScreen(onMenuClick: () -> Unit, goToEditCategory : (Int) -> Unit) 
 
                 categoriesVm.deleteCategoryState.value.id > 0 -> ConfirmCategoryDelete(
                     onConfirm = { categoriesVm.deleteCategoryById() },
-                    onCancel = { categoriesVm.verifyCategoryRemoval(0) }
+                    onCancel = { categoriesVm.verifyCategoryRemoval(0) },
+                    clearError = { categoriesVm.clearDeletionError() },
+                    errorString = categoriesVm.deleteCategoryState.value.errorMsg
+                )
+                categoriesVm.categoriesState.value.showAddDialog -> AddCategoryDialog(
+                    onConfirm = { categoriesVm.addCategory() },
+                    onCancel = { categoriesVm.toggleAddDialog(false) },
+                    name = categoriesVm.addCategoryState.value.name,
+                    setName = { newName -> categoriesVm.setName(newName)},
+                    clearError = { categoriesVm.clearAdditionError() },
+                    errorString = categoriesVm.addCategoryState.value.errorMsg,
+
                 )
                 //LazyColumn piirtää vain näytöllä näkyvät asiat, eikä siis tuhlaa resursseja ylimääräisten näytön ulkopuolisten asioiden piirtämiseen.
                 else -> LazyColumn() {

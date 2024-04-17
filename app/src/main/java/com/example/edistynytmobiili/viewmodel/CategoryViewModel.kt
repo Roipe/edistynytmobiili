@@ -8,7 +8,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.edistynytmobiili.api.categoriesService
 import com.example.edistynytmobiili.model.CategoryState
-import com.example.edistynytmobiili.model.SaveCategoryReq
+import com.example.edistynytmobiili.model.EditCategoryReq
 import kotlinx.coroutines.launch
 
 //Parametri haetaan savedStateHandlesta, johon navigoinnin yhteydessä on tallennettu dataa
@@ -45,7 +45,7 @@ class CategoryViewModel(savedStateHandle: SavedStateHandle) : ViewModel() {
         viewModelScope.launch {
             try {
                 _categoryState.value = _categoryState.value.copy(loading = true)
-                categoriesService.saveCategory(_categoryId, SaveCategoryReq(name = _categoryState.value.item.name))
+                categoriesService.editCategory(_categoryId, EditCategoryReq(name = _categoryState.value.item.name))
                 //Asetetaan ok-arvo, jolla annetaan Viewille tieto, että requesti onnistui ja se saa suorittaa poisnavigoinnin
                 setOk(true)
             } catch(e: Exception) {

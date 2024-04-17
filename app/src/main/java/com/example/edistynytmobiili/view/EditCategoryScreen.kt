@@ -70,8 +70,8 @@ fun EditCategoryScreen(backToCategories: () -> Unit, goToCategories: () -> Unit)
                     ) {
                         OutlinedTextField(
                             value = vm.categoryState.value.item.name,
-                            onValueChange = { value ->
-                                vm.setName(value)
+                            onValueChange = { newValue ->
+                                vm.setName(newValue)
                             }
                         )
                         Spacer(modifier = Modifier.height(8.dp))

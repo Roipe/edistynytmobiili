@@ -1,12 +1,15 @@
 package com.example.edistynytmobiili.api
 
 
+import com.example.edistynytmobiili.model.AddCategoryReq
 import com.example.edistynytmobiili.model.CategoriesResponse
+import com.example.edistynytmobiili.model.CategoryItem
 import com.example.edistynytmobiili.model.CategoryResponse
-import com.example.edistynytmobiili.model.SaveCategoryReq
+import com.example.edistynytmobiili.model.EditCategoryReq
 import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
+import retrofit2.http.POST
 import retrofit2.http.PUT
 import retrofit2.http.Path
 
@@ -32,9 +35,12 @@ interface CategoriesApi {
 
     @GET("category/{id}")
     suspend fun getCategory(@Path("id") id: Int): CategoryResponse
+    @POST("category/")
+    suspend fun createCategory(@Body req: AddCategoryReq) : CategoryResponse
     @PUT("category/{id}")
-    suspend fun saveCategory(@Path("id") id: Int, @Body saveCategoryReq: SaveCategoryReq) : CategoryResponse
-
+    suspend fun editCategory(@Path("id") id: Int, @Body saveCategoryReq: EditCategoryReq) : CategoryResponse
     @DELETE("category/{id}")
-    suspend fun deleteCategory(@Path("id") id: Int)
+    suspend fun removeCategory(@Path("id") id: Int)
+
+
 }

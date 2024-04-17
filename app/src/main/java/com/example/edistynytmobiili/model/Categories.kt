@@ -5,6 +5,7 @@ import com.google.gson.annotations.SerializedName
 data class CategoriesState (
     val list: List<CategoryItem> = emptyList(),
     val loading: Boolean = false,
+    val showAddDialog: Boolean = false,
     val errorMsg: String? = null
 )
 data class CategoryState(
@@ -20,6 +21,11 @@ data class DeleteCategoryState(
     val errorMsg: String? = null
 )
 
+data class AddCategoryState(
+    val name: String = "",
+    val errorMsg: String? = null
+)
+
 data class CategoryItem(
     @SerializedName("category_id")
     val id: Int = 0,
@@ -31,7 +37,11 @@ data class CategoryItem(
 data class CategoriesResponse(val categories: List<CategoryItem> = emptyList())
 data class CategoryResponse(val category: CategoryItem = CategoryItem())
 
-data class SaveCategoryReq(
+data class EditCategoryReq(
+    @SerializedName("category_name")
+    val name: String = ""
+)
+data class AddCategoryReq(
     @SerializedName("category_name")
     val name: String = ""
 )
