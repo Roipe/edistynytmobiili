@@ -8,6 +8,7 @@ import com.example.edistynytmobiili.api.categoriesService
 import com.example.edistynytmobiili.model.CategoriesResponse
 import com.example.edistynytmobiili.model.CategoriesState
 import com.example.edistynytmobiili.model.CategoryItem
+import com.example.edistynytmobiili.model.DeleteCategoryState
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -15,6 +16,9 @@ class CategoriesViewModel : ViewModel() {
 
     private val _categoriesState = mutableStateOf(CategoriesState())
     val categoriesState: State<CategoriesState> = _categoriesState
+
+    private val _deleteCategoryState = mutableStateOf(DeleteCategoryState())
+    val deleteCategoryState: State <DeleteCategoryState> = _deleteCategoryState
 
     //Esimerkiksi rajapintakutsut tehdään init:n sisällä. Tämän sisältämä koodi suoritetaan näytön renderauksen yhteydessä.
     init {
@@ -24,6 +28,32 @@ class CategoriesViewModel : ViewModel() {
     private suspend fun waitForCategories() {
         delay(2000)
     }
+    fun verifyCategoryRemoval(categoryId: Int) {
+        _deleteCategoryState.value = _deleteCategoryState.value.copy(id = categoryId)
+    }
+    fun deleteCategoryById() {
+        viewModelScope.launch {
+            try {
+                _categoriesState.value = _categoriesState.value.copy(loading = true)
+                categoriesService.deleteCategory(_deleteCategoryState.value.id)
+                //Filterillä suodatetaan määritellyn ehdon mukaisesti uuteen listaan itemeitä
+                val listOfCategories = _categoriesState.value.list.filter {
+                    //Kun tämä ehto on tosi, lisätään käsiteltävä itemi uuteen listaan
+                    _deleteCategoryState.value.id != it.id
+                }
+                //Asetetaan stateen suodatettu lista, josta on poistettu parametrin id:n mukainen kategoria.
+                _categoriesState.value = _categoriesState.value.copy(list = listOfCategories)
+                verifyCategoryRemoval(0)
+
+            } catch (e: Exception) {
+                _categoriesState.value = _categoriesState.value.copy(errorMsg = e.message)
+            } finally {
+                _categoriesState.value = _categoriesState.value.copy(loading = false)
+            }
+        }
+
+    }
+
 
     private fun getCategories() {
         viewModelScope.launch {

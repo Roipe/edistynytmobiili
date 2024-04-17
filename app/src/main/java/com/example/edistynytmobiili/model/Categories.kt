@@ -15,6 +15,11 @@ data class CategoryState(
     val errorMsg: String? = null
 )
 
+data class DeleteCategoryState(
+    val id: Int = 0,
+    val errorMsg: String? = null
+)
+
 data class CategoryItem(
     @SerializedName("category_id")
     val id: Int = 0,

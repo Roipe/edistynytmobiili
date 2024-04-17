@@ -16,6 +16,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -23,6 +24,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -49,6 +51,23 @@ fun RandomImage() {
     )
 }
 
+@Composable
+fun ConfirmCategoryDelete(onConfirm : () -> Unit, onCancel: () -> Unit) {
+    AlertDialog(
+        title = {Text("Confirm deletion")},
+        text = { Text("Are you sure you want to delete the category?") },
+        onDismissRequest = { /*TODO*/ },
+        confirmButton = {
+            TextButton(onClick = { onConfirm() }) {
+                Text("Delete")
+        }
+    }, dismissButton = {
+            TextButton(onClick = { onCancel() }) {
+                Text("Cancel")
+            }
+        }
+    )
+}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -78,7 +97,12 @@ fun CategoriesScreen(onMenuClick: () -> Unit, goToEditCategory : (Int) -> Unit) 
                 )
                 //Erroreiden tapauksessa printataan näytölle error message.
                 categoriesVm.categoriesState.value.errorMsg != null ->
-                    Text("${categoriesVm.categoriesState.value.errorMsg}")
+                    Text("Error: ${categoriesVm.categoriesState.value.errorMsg}")
+
+                categoriesVm.deleteCategoryState.value.id > 0 -> ConfirmCategoryDelete(
+                    onConfirm = { categoriesVm.deleteCategoryById() },
+                    onCancel = { categoriesVm.verifyCategoryRemoval(0) }
+                )
                 //LazyColumn piirtää vain näytöllä näkyvät asiat, eikä siis tuhlaa resursseja ylimääräisten näytön ulkopuolisten asioiden piirtämiseen.
                 else -> LazyColumn() {
                     items(categoriesVm.categoriesState.value.list) {
@@ -106,7 +130,7 @@ fun CategoriesScreen(onMenuClick: () -> Unit, goToEditCategory : (Int) -> Unit) 
                                                 contentDescription = "Edit"
                                             )
                                         }
-                                        IconButton(onClick = { /*TODO*/ }) {
+                                        IconButton(onClick = { categoriesVm.verifyCategoryRemoval(it.id) }) {
                                             Icon(
                                                 imageVector = Icons.Default.Delete,
                                                 contentDescription = "Delete"
