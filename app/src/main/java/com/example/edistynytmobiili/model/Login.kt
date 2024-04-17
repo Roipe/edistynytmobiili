@@ -1,21 +1,41 @@
 package com.example.edistynytmobiili.model
 
+import com.google.gson.annotations.SerializedName
 
-//data class kirjautumispyyntöä varten
-data class LoginReqModel(
+
+
+data class LoginState(
     val username: String = "",
     val password: String  = "",
-    val loading: Boolean = false
+    val loading: Boolean = false,
+    val errorMsg: String? = null,
+    val loginStatus: Boolean = false
 )
-// data class kirjautumisvastausta varten
-data class LoginResModel(
+
+/*
+data class LoginRes(
     val id: Int = 0,
     val accessToken: String = "",
     val username: String = "",
 )
-// data class todennuspyyntöä varten
-data class AuthReqModel(
+
+ */
+
+data class AuthReq(
     val username: String = "",
     val password: String  = ""
 )
+
+data class AuthRes(
+    @SerializedName("access_token")
+    val accessToken: String = ""
+)
+
+data class LogoutState(
+    val loading: Boolean = false,
+    val errorMsg: String? = null,
+    val logoutStatus: Boolean = false
+)
+
+
 

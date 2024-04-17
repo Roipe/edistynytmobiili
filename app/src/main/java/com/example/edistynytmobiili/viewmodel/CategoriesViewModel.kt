@@ -1,6 +1,6 @@
 package com.example.edistynytmobiili.viewmodel
 
-import android.util.Log
+
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
@@ -8,10 +8,8 @@ import androidx.lifecycle.viewModelScope
 import com.example.edistynytmobiili.api.categoriesService
 import com.example.edistynytmobiili.model.AddCategoryReq
 import com.example.edistynytmobiili.model.AddCategoryState
-import com.example.edistynytmobiili.model.CategoriesResponse
 import com.example.edistynytmobiili.model.CategoriesState
-import com.example.edistynytmobiili.model.CategoryItem
-import com.example.edistynytmobiili.model.CategoryResponse
+
 import com.example.edistynytmobiili.model.DeleteCategoryState
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch

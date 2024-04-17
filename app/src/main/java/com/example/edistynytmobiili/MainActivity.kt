@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ExitToApp
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Menu
@@ -42,6 +43,7 @@ import com.example.edistynytmobiili.ui.theme.EdistynytMobiiliTheme
 import com.example.edistynytmobiili.view.CategoriesScreen
 import com.example.edistynytmobiili.view.EditCategoryScreen
 import com.example.edistynytmobiili.view.LoginScreen
+import com.example.edistynytmobiili.view.LogoutScreen
 import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
@@ -81,7 +83,6 @@ class MainActivity : ComponentActivity() {
                                     })
                                 NavigationDrawerItem(
                                     label = { Text(text = "Login")},
-                                    //Oletusikkunassa selected = true
                                     selected = false,
                                     onClick = { scope.launch {
                                         navController.navigate("loginScreen")
@@ -92,11 +93,24 @@ class MainActivity : ComponentActivity() {
                                             contentDescription = "Login"
                                         )
                                     })
+                                NavigationDrawerItem(
+                                    label = { Text(text = "Logout")},
+                                    selected = false,
+                                    onClick = { scope.launch {
+                                        navController.navigate("logoutScreen")
+                                        drawerState.close()} },
+                                    icon = {
+                                        Icon(
+                                            imageVector = Icons.Filled.ExitToApp,
+                                            contentDescription = "Logout"
+                                        )
+                                    })
+
                             }
                         },
                         ) {
 
-                            NavHost(navController = navController, startDestination = "categoriesScreen") {
+                            NavHost(navController = navController, startDestination = "loginScreen") {
                                 //Navigoinnin mahdollistamiseksi NavHostiin tulee lisätä kohteille composablet
                                 composable(route = "categoriesScreen") {
                                     /*onMenuClick-callbackillä menu iconia painamalla avataan drawer.
@@ -144,6 +158,17 @@ class MainActivity : ComponentActivity() {
                                 )
 
                                 }
+
+                                composable(route = "logoutScreen") {
+                                    LogoutScreen(goToLogin = {navController.navigate("loginScreen") {
+                                        popUpTo("loginScreen") {
+                                            inclusive = true
+                                        }
+                                    } },
+                                        cancelLogout = {navController.navigateUp()})
+                                }
+
+
 
                             }
 
