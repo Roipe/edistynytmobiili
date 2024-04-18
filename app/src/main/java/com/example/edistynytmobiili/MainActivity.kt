@@ -44,6 +44,7 @@ import com.example.edistynytmobiili.view.CategoriesScreen
 import com.example.edistynytmobiili.view.EditCategoryScreen
 import com.example.edistynytmobiili.view.LoginScreen
 import com.example.edistynytmobiili.view.LogoutScreen
+import com.example.edistynytmobiili.view.RegistrationScreen
 import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
@@ -147,7 +148,10 @@ class MainActivity : ComponentActivity() {
                                     Tällä callback-funktiolla Nav Controlleria ei tarvitse erikseen määritellä tai kutsua LoginScreenin koodissa,
                                     sillä ohjeet välitetään tämän kautta.
                                     */
-                                    LoginScreen(goToCategories = { navController.navigate("categoriesScreen") })
+                                    LoginScreen(
+                                        goToCategories = { navController.navigate("categoriesScreen")},
+                                        goToRegistration = { navController.navigate("registrationScreen")}
+                                    )
                                 }
                                 //Parametriä vastaanottavalle routelle lisätään "wild card" merkintä routen perään
                                 //Tällä tunnisteella vastaanottavassa ViewModelissa haetaan parametri savedStateHandlesta.
@@ -160,12 +164,19 @@ class MainActivity : ComponentActivity() {
                                 }
 
                                 composable(route = "logoutScreen") {
-                                    LogoutScreen(goToLogin = {navController.navigate("loginScreen") {
-                                        popUpTo("loginScreen") {
-                                            inclusive = true
-                                        }
-                                    } },
-                                        cancelLogout = {navController.navigateUp()})
+                                    LogoutScreen(
+                                        goToLogin = {
+                                            navController.navigate("loginScreen") {
+                                                popUpTo("loginScreen") { inclusive = true }
+                                            }
+                                        },
+                                        cancelLogout = {navController.navigateUp()},
+                                        exitApp = {finish()}
+                                    )
+                                }
+
+                                composable(route = "registrationScreen") {
+                                    RegistrationScreen(goToLogin = {navController.navigate("loginScreen")})
                                 }
 
 

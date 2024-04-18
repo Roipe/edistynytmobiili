@@ -2,6 +2,8 @@ package com.example.edistynytmobiili.api
 
 import com.example.edistynytmobiili.model.AuthReq
 import com.example.edistynytmobiili.model.AuthRes
+import com.example.edistynytmobiili.model.RegReq
+import com.example.edistynytmobiili.model.RegRes
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.Header
@@ -24,6 +26,11 @@ interface AuthApi {
     @POST("auth/logout")
     suspend fun logout(@Header("Authorization") bearerToken: String)
 
+    @POST("auth/register")
+    suspend fun register(@Body req: RegReq): RegRes
+
     @GET("auth/account")
     suspend fun getAccount(@Header("Authorization") bearerToken: String)
+
+
 }

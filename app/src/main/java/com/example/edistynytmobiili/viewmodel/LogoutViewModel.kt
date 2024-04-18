@@ -33,8 +33,8 @@ class LogoutViewModel(private val db: AccountDatabase = DbProvider.db) : ViewMod
             }
         }
     }
-    fun setLogoutStatus(status: Boolean) {
-        _logoutState.value = _logoutState.value.copy(logoutStatus = status)
+    fun setLogoutStatus(newStatus: Boolean) {
+        _logoutState.value = _logoutState.value.copy(status = newStatus)
     }
 
 }

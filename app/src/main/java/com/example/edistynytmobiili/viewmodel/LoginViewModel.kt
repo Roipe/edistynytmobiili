@@ -41,8 +41,8 @@ class LoginViewModel(private val db: AccountDatabase = DbProvider.db) : ViewMode
         _loginState.value = _loginState.value.copy(password = newPassword)
     }
 
-    fun setLoginStatus(status: Boolean) {
-        _loginState.value = _loginState.value.copy(loginStatus = status)
+    fun setLoginStatus(newStatus: Boolean) {
+        _loginState.value = _loginState.value.copy(status = newStatus)
     }
     fun login() {
         viewModelScope.launch {

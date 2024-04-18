@@ -4,29 +4,41 @@ import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.edistynytmobiili.components.DirectingText
+import com.example.edistynytmobiili.components.PasswordTextField
+import com.example.edistynytmobiili.components.UsernameTextField
 import com.example.edistynytmobiili.viewmodel.LoginViewModel
 
 
 @Composable
 //Loginscreenin argumentteihin navigointia varten callback-funktio
-fun LoginScreen(goToCategories: () -> Unit) {
+fun LoginScreen(goToCategories: () -> Unit, goToRegistration: () -> Unit) {
 
     val vm: LoginViewModel = viewModel()
     val context = LocalContext.current
@@ -34,60 +46,63 @@ fun LoginScreen(goToCategories: () -> Unit) {
     LaunchedEffect(key1 = vm.loginState.value.errorMsg) {
         vm.loginState.value.errorMsg?.let {
             Toast.makeText(context, it, Toast.LENGTH_LONG).show()
-            //vm.clearError()
         }
     }
 
     //LaunchedEffect onnistuneen kirjautumisen johdosta poisnavigoinnille
-    LaunchedEffect(key1 = vm.loginState.value.loginStatus) {
-        if (vm.loginState.value.loginStatus) {
+    LaunchedEffect(key1 = vm.loginState.value.status) {
+        if (vm.loginState.value.status) {
             goToCategories()
         }
     }
+
     Box(modifier = Modifier.fillMaxSize()) {
+       /*
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(start = 15.dp, top = 15.dp),
+            horizontalAlignment = Alignment.Start,
+            verticalArrangement = Arrangement.Top
+        ){
+            Text("Log in", fontSize = 18.sp, fontWeight = FontWeight.Medium)
+        }
+
+        */
         when {
-            //Kun todetaan sovelluksen olevan lataustilassa, näytetään keskellä näyttöä latausikoni
-            vm.loginState.value.loading -> CircularProgressIndicator(modifier = Modifier.align(
-                Alignment.Center))
-            //Muissa tapauksissa näytetään tavallinen sisältö; Username- ja Password-tekstikentät sekä Login-nappi
+            vm.loginState.value.loading -> CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
             else -> Column(
                 modifier = Modifier.fillMaxSize(),
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally,
 
-                ) {//Tekstikentän valueksi saadaan LoginViewModelissa määritellyn loginStaten arvo,
-                // joka rakennetaan Login data classin avulla
-                OutlinedTextField(value = vm.loginState.value.username, onValueChange = { newUsername ->
-                    //Tekstikentän arvon muuttuessa ViewModelista kutsutaan funktiota muuttamaan usernamea
-                    vm.setUsername(newUsername)
-                }, placeholder = {
-                    Text(text="Username")
-                })
-                //Spacerillä lisätään haluttu määrä tilaa komponenttien välille
-                Spacer(modifier = Modifier.height(16.dp))
-                OutlinedTextField(value = vm.loginState.value.password,
-                    onValueChange = { newPassword ->
-                        vm.setPassword(newPassword)
-                    }, placeholder = {
-                        Text(text="Password")
-                        //visualTransformationilla saadaan salasana sensuroiduksi.
-                    }, visualTransformation = PasswordVisualTransformation(),
-                    /*Myös näppäimistön tyypiksi asetetaan salasana-tyyppi, jotta salasanat eivät tallennu
-                    esimerkiksi ennakoivaan teksinsyöttöön */
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password)
+                ) {
+                UsernameTextField(
+                    username = vm.loginState.value.username,
+                    onUsernameChange = { newUsername ->
+                        vm.setUsername(newUsername)
+                    },
                 )
-                Spacer(modifier = Modifier.height(16.dp))
+                PasswordTextField(
+                    password = vm.loginState.value.password,
+                    onPasswordChange = { newValue ->
+                        vm.setPassword(newValue)
+                    }
+                )
+
                 Button(
-                    //Nappi on aktiivinen vain, kun sekä username- ja password-kentissä on sisältöä
                     enabled = vm.loginState.value.username != "" && vm.loginState.value.password != "",
-                    //Nappia painettaessa kutsutaan ViewModelin login-funktiota
-                    onClick = {
-                        vm.login()
-                        //Kutsutaan callback-funktiota, jonka avulla toteutetaan navigointi oikeaan kohteeseen
-                        //goToCategories()
-                    }) {
+                    onClick = { vm.login() },
+                    modifier = Modifier.fillMaxWidth(0.5f)
+                    ) {
                     Text(text = "Login")
                 }
+                Spacer(modifier = Modifier.height(12.dp))
+                DirectingText(
+                    directingText = "New user?",
+                    textButtonText = "Sign Up",
+                    onClick = { goToRegistration() }
+                )
             }
         }
     }

@@ -9,17 +9,8 @@ data class LoginState(
     val password: String  = "",
     val loading: Boolean = false,
     val errorMsg: String? = null,
-    val loginStatus: Boolean = false
+    val status: Boolean = false
 )
-
-/*
-data class LoginRes(
-    val id: Int = 0,
-    val accessToken: String = "",
-    val username: String = "",
-)
-
- */
 
 data class AuthReq(
     val username: String = "",
@@ -34,7 +25,29 @@ data class AuthRes(
 data class LogoutState(
     val loading: Boolean = false,
     val errorMsg: String? = null,
-    val logoutStatus: Boolean = false
+    val status: Boolean = false
+)
+
+data class RegistrationState (
+    val username: String = "",
+    val password: String = "",
+    val passwordConfirm: String = "",
+    val loading: Boolean = false,
+    val errorMsg: String? = null,
+    val status: Boolean = false,
+    val isUsernameError: Boolean = false,
+    val isPasswordError: Boolean = false,
+    //val showError: Boolean = false
+)
+
+data class RegReq(
+    val username: String = "",
+    val password: String  = ""
+)
+
+data class RegRes(
+    @SerializedName("username")
+    val username: String = ""
 )
 
 
