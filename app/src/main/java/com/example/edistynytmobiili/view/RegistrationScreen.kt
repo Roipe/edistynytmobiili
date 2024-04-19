@@ -60,8 +60,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.edistynytmobiili.components.DirectingText
+import com.example.edistynytmobiili.components.NameTextField
 import com.example.edistynytmobiili.components.PasswordTextField
-import com.example.edistynytmobiili.components.UsernameTextField
 import com.example.edistynytmobiili.viewmodel.RegistrationViewModel
 
 @Composable
@@ -154,9 +154,9 @@ fun RegistrationScreen(goToLogin : () -> Unit) {
 
                     Text("Create your username and password", fontSize = 18.sp)
                     Spacer(modifier = Modifier.height(30.dp))
-                    UsernameTextField(
-                        username = vm.registrationState.value.username,
-                        onUsernameChange = { newValue ->
+                    NameTextField(
+                        name = vm.registrationState.value.username,
+                        onNameChange = { newValue ->
                             vm.setUsername(newValue)
                         },
                         isError = vm.registrationState.value.isUsernameError,

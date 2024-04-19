@@ -7,23 +7,22 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun UsernameTextField(
-    username: String,
-    onUsernameChange: (String) -> Unit,
+fun NameTextField(
+    name: String,
+    onNameChange: (String) -> Unit,
     isError: Boolean = false,
     errorColor: Color = MaterialTheme.colorScheme.error,
-    textFieldLabel: String = "Username",
-    errorMsg: String? = "Username not valid"
+    textFieldLabel: String = "Name",
+    errorMsg: String? = "Name not valid"
 ) {
     OutlinedTextField(
         label = { Text(textFieldLabel) },
-        value = username,
+        value = name,
         onValueChange = { newValue ->
-            onUsernameChange(newValue)
+            onNameChange(newValue)
         },
         isError = isError,
         supportingText = {
@@ -37,6 +36,6 @@ fun UsernameTextField(
         },
         modifier = Modifier
             //.fillMaxWidth()
-           .padding(bottom = 8.dp)
+           //.padding(bottom = 8.dp)
     )
 }

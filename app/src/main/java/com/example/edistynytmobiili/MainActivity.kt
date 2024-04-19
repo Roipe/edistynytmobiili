@@ -42,8 +42,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.edistynytmobiili.ui.theme.EdistynytMobiiliTheme
+import com.example.edistynytmobiili.view.AddCategoryScreen
 import com.example.edistynytmobiili.view.CategoriesScreen
-import com.example.edistynytmobiili.view.CategoryListScreen
 import com.example.edistynytmobiili.view.EditCategoryScreen
 import com.example.edistynytmobiili.view.LoginScreen
 import com.example.edistynytmobiili.view.LogoutScreen
@@ -116,8 +116,7 @@ class MainActivity : ComponentActivity() {
                             }
                         },
                         ) {
-                            //NavHost(navController = navController, startDestination = Screen.Login.route)
-                            NavHost(navController = navController, startDestination = Screen.CategoryList.route) {
+                            NavHost(navController = navController, startDestination = Screen.Login.route) {
                                 composable(route = Screen.Categories.route) {
                                     CategoriesScreen(onMenuClick = {
                                         scope.launch {
@@ -127,7 +126,8 @@ class MainActivity : ComponentActivity() {
                                         }
                                     },
                                         //Screen-luokan EditCategory-objektilla on "routeWithId"-funktio, jolla toteutetaan parametrin välitys
-                                        goToEditCategory = { navController.navigate(Screen.EditCategory.routeWithId(it)) }
+                                        goToEditCategory = { navController.navigate(Screen.EditCategory.routeWithId(it)) },
+                                        goToAddCategory = {navController.navigate(Screen.AddCategory.route)}
                                     )
 
                                 }
@@ -139,7 +139,7 @@ class MainActivity : ComponentActivity() {
                                 }
                                 composable(route = Screen.EditCategory.route) {
                                 EditCategoryScreen(
-                                    backToCategories = { navController.navigateUp() },
+                                    onCancel = { navController.navigateUp() },
                                     goToCategories = { navController.navigate(Screen.Categories.route) }
                                 )
                                 }
@@ -161,12 +161,13 @@ class MainActivity : ComponentActivity() {
                                     } })
                                 }
 
-                                composable(route = Screen.CategoryList.route) {
-                                    CategoryListScreen(
-                                        onMenuClick = {},
-                                        goToEditCategory = {}
+                                composable(route = Screen.AddCategory.route) {
+                                    AddCategoryScreen(
+                                        onDone = { navController.navigate(Screen.Categories.route) },
+                                        onCancel = { navController.navigateUp() }
                                     )
                                 }
+
 
 
                             }

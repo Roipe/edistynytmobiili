@@ -1,18 +1,24 @@
 package com.example.edistynytmobiili.view
 
+import android.util.Log
 import android.widget.Toast
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
@@ -25,6 +31,7 @@ import androidx.compose.material3.FabPosition
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -34,27 +41,20 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+
 
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.unit.dp
 
 import androidx.lifecycle.viewmodel.compose.viewModel
-import coil.compose.AsyncImage
-import coil.request.ImageRequest
-import com.example.edistynytmobiili.components.ListingItem
+
+import com.example.edistynytmobiili.components.AddButtonListing
+import com.example.edistynytmobiili.components.CategoryOptionsSheet
+
+import com.example.edistynytmobiili.components.SelectableListingItem
 import com.example.edistynytmobiili.viewmodel.CategoriesViewModel
 
-/*
-@Composable
-fun RandomImage() {
-    AsyncImage(
-        model = ImageRequest.Builder(LocalContext.current)
-            .data("https://picsum.photos/300")
-            .build(),
-        contentDescription = "Random image"
-    )
-}
-
- */
 
 @Composable
 fun ConfirmCategoryDelete(onConfirm : () -> Unit, onCancel: () -> Unit, clearError: () -> Unit, errorString: String?){
@@ -123,7 +123,11 @@ fun AddCategoryDialog(onConfirm: () -> Unit, onCancel: () -> Unit, name: String,
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CategoriesScreen(onMenuClick: () -> Unit, goToEditCategory : (Int) -> Unit) {
+fun CategoriesScreen(
+    onMenuClick: () -> Unit,
+    goToEditCategory : (Int) -> Unit,
+    goToAddCategory : () -> Unit
+) {
     val vm: CategoriesViewModel = viewModel()
 
     //Scaffoldilla hallitaan erilaisia UI:n osia, kuten app bareja ja floating action buttoneita
@@ -136,6 +140,11 @@ fun CategoriesScreen(onMenuClick: () -> Unit, goToEditCategory : (Int) -> Unit) 
                     IconButton(onClick = { onMenuClick() }) {
                         Icon(Icons.Default.Menu, contentDescription = "Menu")
                     }
+                },
+                actions = {
+                    IconButton(onClick = { goToAddCategory() }) {
+                        Icon(imageVector = Icons.Filled.Add, contentDescription = "Add Category")
+                    }
                 }
 
             )
@@ -147,6 +156,7 @@ fun CategoriesScreen(onMenuClick: () -> Unit, goToEditCategory : (Int) -> Unit) 
         //    }
         //}
     ){
+
         Box(modifier = Modifier
             .fillMaxSize()
             .padding(it)) {
@@ -160,10 +170,11 @@ fun CategoriesScreen(onMenuClick: () -> Unit, goToEditCategory : (Int) -> Unit) 
 
                 vm.deleteCategoryState.value.id > 0 -> ConfirmCategoryDelete(
                     onConfirm = { vm.deleteCategoryById() },
-                    onCancel = { vm.verifyCategoryRemoval(0) },
+                    onCancel = { vm.setCategoryForRemoval(0) },
                     clearError = { vm.clearDeletionError() },
                     errorString = vm.deleteCategoryState.value.errorMsg
                 )
+
                 /*
                 vm.categoriesState.value.showAddDialog -> AddCategoryDialog(
                     onConfirm = { vm.addCategory() },
@@ -176,68 +187,47 @@ fun CategoriesScreen(onMenuClick: () -> Unit, goToEditCategory : (Int) -> Unit) 
                 )
 
                  */
+                }
                 //LazyColumn piirtää vain näytöllä näkyvät asiat, eikä siis tuhlaa resursseja ylimääräisten näytön ulkopuolisten asioiden piirtämiseen.
-                else -> LazyColumn() {
+                LazyColumn(
+                    contentPadding = PaddingValues(10.dp),
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(16.dp))
+                        .background(MaterialTheme.colorScheme.primaryContainer)
+                        .wrapContentSize()
+
+
+                ) {
                     items(vm.categoriesState.value.list) {item ->
-                        ListingItem(
+                        Log.d("cat 1", "id: ${item.id} name: ${item.name}")
+                        Spacer(modifier = Modifier.height(5.dp))
+                        SelectableListingItem(
                             name = item.name,
-                            onEdit = { goToEditCategory(item.id) },
-                            onDelete = { vm.verifyCategoryRemoval(item.id) },
-                            onLongPress = {},
+                            onSelect = {vm.setSelectedItem(item.name, item.id)},
                             onOpen = {},
-                            onUnselect = {}
-
+                            isSelected = vm.selectedItem(item.id)
                         )
-
-
-
-
-                        /*
-                        Column(modifier = Modifier.fillMaxWidth()) {
-                            Row (
-                                Modifier
-                                    .fillMaxWidth()
-                                    .padding(8.dp),
-                                horizontalArrangement = Arrangement.SpaceBetween){
-                                RandomImage()
-                                Spacer(modifier = Modifier.width(16.dp))
-                                Column(horizontalAlignment = Alignment.End) {
-                                    Text(
-                                        text = it.name,
-                                        style = MaterialTheme.typography.headlineSmall,
-                                        maxLines = 1,
-                                        overflow = TextOverflow.Ellipsis
-                                    )
-                                    Row {
-                                        IconButton(onClick = {
-                                            goToEditCategory(it.id)
-                                        }) {
-                                            Icon(
-                                                imageVector = Icons.Default.Edit,
-                                                contentDescription = "Edit"
-                                            )
-                                        }
-                                        IconButton(onClick = { categoriesVm.verifyCategoryRemoval(it.id) }) {
-                                            Icon(
-                                                imageVector = Icons.Default.Delete,
-                                                contentDescription = "Delete"
-                                            )
-                                        }
-                                    }
-                                }
-                            }
-
-                        }
-
-                         */
-
-
-
-
+                        Spacer(modifier = Modifier.height(5.dp))
 
                     }
+                    item {
+                        Spacer(modifier = Modifier.height(5.dp))
+                        AddButtonListing(name = "Add a new category", onClick = { goToAddCategory() })
+                        Spacer(modifier = Modifier.height(5.dp))
+                    }
+
                 }
-            }
+
+                if (vm.categoriesState.value.selectedItem.name != "") {
+                    CategoryOptionsSheet(
+                        name = vm.categoriesState.value.selectedItem.name,
+                        onOpen = { /*TODO*/ },
+                        onEdit = { goToEditCategory(vm.categoriesState.value.selectedItem.id) },
+                        onDelete = { vm.setCategoryForRemoval(vm.categoriesState.value.selectedItem.id) },
+                        onClose = { vm.setSelectedItem() }
+                    )
+                }
+
         }
     }
 }

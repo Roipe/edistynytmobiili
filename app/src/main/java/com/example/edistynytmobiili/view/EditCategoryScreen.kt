@@ -28,9 +28,8 @@ import com.example.edistynytmobiili.viewmodel.CategoryViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun EditCategoryScreen(backToCategories: () -> Unit, goToCategories: () -> Unit) {
+fun EditCategoryScreen(goToCategories: () -> Unit, onCancel: () -> Unit) {
     val vm: CategoryViewModel = viewModel()
-    //LaunchedEffectillä voidaan kuunnella ja suorittaa koodiblockeja kuunneltavan muuttujan arvon muuttuessa.
     LaunchedEffect(key1 = vm.categoryState.value.ok) {
         if (vm.categoryState.value.ok) {
             vm.setOk(false)
@@ -40,9 +39,9 @@ fun EditCategoryScreen(backToCategories: () -> Unit, goToCategories: () -> Unit)
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("${vm.categoryState.value.item.name}") },
+                title = { Text(vm.categoryState.value.item.name)},
                 navigationIcon = {
-                    IconButton(onClick = { backToCategories() }) {
+                    IconButton(onClick = { onCancel() }) {
                         Icon(
                             imageVector = Icons.Default.ArrowBack,
                             contentDescription = "back to categories"
@@ -77,6 +76,7 @@ fun EditCategoryScreen(backToCategories: () -> Unit, goToCategories: () -> Unit)
                         )
                         Spacer(modifier = Modifier.height(8.dp))
                         Button(
+                            enabled = vm.categoryState.value.item.name != "",
                             onClick = {
                                 vm.saveCategory()
                             }

@@ -35,8 +35,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.edistynytmobiili.components.DirectingText
+import com.example.edistynytmobiili.components.NameTextField
 import com.example.edistynytmobiili.components.PasswordTextField
-import com.example.edistynytmobiili.components.UsernameTextField
 import com.example.edistynytmobiili.viewmodel.LoginViewModel
 
 
@@ -92,9 +92,9 @@ fun LoginScreen(goToCategories: () -> Unit, goToRegistration: () -> Unit) {
                 Text("Please log in to access the app", fontSize = 18.sp)
                 Spacer(modifier = Modifier.height(30.dp))
 
-                UsernameTextField(
-                    username = vm.loginState.value.username,
-                    onUsernameChange = { newUsername ->
+                NameTextField(
+                    name = vm.loginState.value.username,
+                    onNameChange = { newUsername ->
                         vm.setUsername(newUsername)
                     },
                 )

@@ -11,4 +11,5 @@ sealed class Screen (val route: String) {
         }
     }
     data object CategoryList: Screen("categoryListScreen")
+    data object AddCategory: Screen("addCategoryScreen")
 }
