@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -15,10 +16,13 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
@@ -36,16 +40,20 @@ import com.example.edistynytmobiili.components.UsernameTextField
 import com.example.edistynytmobiili.viewmodel.LoginViewModel
 
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 //Loginscreenin argumentteihin navigointia varten callback-funktio
 fun LoginScreen(goToCategories: () -> Unit, goToRegistration: () -> Unit) {
 
     val vm: LoginViewModel = viewModel()
     val context = LocalContext.current
+    Scaffold(
+        topBar = { TopAppBar(title = {Text("Login") }) }
+    ) {
     //LaunchedEffect errorin toastiin tulostamiselle
     LaunchedEffect(key1 = vm.loginState.value.errorMsg) {
-        vm.loginState.value.errorMsg?.let {
-            Toast.makeText(context, it, Toast.LENGTH_LONG).show()
+        vm.loginState.value.errorMsg?.let { message ->
+            Toast.makeText(context, message, Toast.LENGTH_LONG).show()
         }
     }
 
@@ -56,7 +64,9 @@ fun LoginScreen(goToCategories: () -> Unit, goToRegistration: () -> Unit) {
         }
     }
 
-    Box(modifier = Modifier.fillMaxSize()) {
+    Box(modifier = Modifier
+        .fillMaxSize()
+        .padding(it)) {
        /*
         Column(
             modifier = Modifier
@@ -72,11 +82,16 @@ fun LoginScreen(goToCategories: () -> Unit, goToRegistration: () -> Unit) {
         when {
             vm.loginState.value.loading -> CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
             else -> Column(
-                modifier = Modifier.fillMaxSize(),
+                modifier = Modifier
+                    //.fillMaxSize()
+                    .fillMaxWidth()
+                    .fillMaxHeight(0.7f),
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally,
-
                 ) {
+                Text("Please log in to access the app", fontSize = 18.sp)
+                Spacer(modifier = Modifier.height(30.dp))
+
                 UsernameTextField(
                     username = vm.loginState.value.username,
                     onUsernameChange = { newUsername ->
@@ -105,6 +120,7 @@ fun LoginScreen(goToCategories: () -> Unit, goToRegistration: () -> Unit) {
                 )
             }
         }
+    }
     }
 
 }

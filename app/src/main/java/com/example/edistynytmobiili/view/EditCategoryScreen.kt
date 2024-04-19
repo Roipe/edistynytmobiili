@@ -37,7 +37,7 @@ fun EditCategoryScreen(backToCategories: () -> Unit, goToCategories: () -> Unit)
             goToCategories()
         }
     }
-    Scaffold (
+    Scaffold(
         topBar = {
             TopAppBar(
                 title = { Text("${vm.categoryState.value.item.name}") },
@@ -48,7 +48,8 @@ fun EditCategoryScreen(backToCategories: () -> Unit, goToCategories: () -> Unit)
                             contentDescription = "back to categories"
                         )
                     }
-            })
+                }
+            )
 
         }
     ){

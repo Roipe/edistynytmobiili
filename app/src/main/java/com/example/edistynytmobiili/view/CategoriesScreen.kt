@@ -25,7 +25,6 @@ import androidx.compose.material3.FabPosition
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -35,18 +34,16 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.layout.ContentScale
+
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.unit.dp
+
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
+import com.example.edistynytmobiili.components.ListingItem
 import com.example.edistynytmobiili.viewmodel.CategoriesViewModel
-import kotlinx.coroutines.launch
 
+/*
 @Composable
 fun RandomImage() {
     AsyncImage(
@@ -56,6 +53,8 @@ fun RandomImage() {
         contentDescription = "Random image"
     )
 }
+
+ */
 
 @Composable
 fun ConfirmCategoryDelete(onConfirm : () -> Unit, onCancel: () -> Unit, clearError: () -> Unit, errorString: String?){
@@ -125,7 +124,7 @@ fun AddCategoryDialog(onConfirm: () -> Unit, onCancel: () -> Unit, name: String,
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CategoriesScreen(onMenuClick: () -> Unit, goToEditCategory : (Int) -> Unit) {
-    val categoriesVm: CategoriesViewModel = viewModel()
+    val vm: CategoriesViewModel = viewModel()
 
     //Scaffoldilla hallitaan erilaisia UI:n osia, kuten app bareja ja floating action buttoneita
     Scaffold(
@@ -141,42 +140,59 @@ fun CategoriesScreen(onMenuClick: () -> Unit, goToEditCategory : (Int) -> Unit) 
 
             )
         },
-        floatingActionButtonPosition = FabPosition.Center,
-        floatingActionButton = {
-            FloatingActionButton(onClick = { categoriesVm.toggleAddDialog(true) }) {
-                Icon(imageVector = Icons.Filled.Add, contentDescription = "Add Category")
-            }
-        }
+        //floatingActionButtonPosition = FabPosition.Center,
+        //floatingActionButton = {
+        //    FloatingActionButton(onClick = { vm.toggleAddDialog(true) }) {
+        //        Icon(imageVector = Icons.Filled.Add, contentDescription = "Add Category")
+        //    }
+        //}
     ){
         Box(modifier = Modifier
             .fillMaxSize()
             .padding(it)) {
             when {
-                categoriesVm.categoriesState.value.loading -> CircularProgressIndicator(
+                vm.categoriesState.value.loading -> CircularProgressIndicator(
                     modifier = Modifier.align(Alignment.Center)
                 )
                 //Erroreiden tapauksessa printataan näytölle error message.
-                categoriesVm.categoriesState.value.errorMsg != null ->
-                    Text("Error: ${categoriesVm.categoriesState.value.errorMsg}")
+                vm.categoriesState.value.errorMsg != null ->
+                    Text("Error: ${vm.categoriesState.value.errorMsg}")
 
-                categoriesVm.deleteCategoryState.value.id > 0 -> ConfirmCategoryDelete(
-                    onConfirm = { categoriesVm.deleteCategoryById() },
-                    onCancel = { categoriesVm.verifyCategoryRemoval(0) },
-                    clearError = { categoriesVm.clearDeletionError() },
-                    errorString = categoriesVm.deleteCategoryState.value.errorMsg
+                vm.deleteCategoryState.value.id > 0 -> ConfirmCategoryDelete(
+                    onConfirm = { vm.deleteCategoryById() },
+                    onCancel = { vm.verifyCategoryRemoval(0) },
+                    clearError = { vm.clearDeletionError() },
+                    errorString = vm.deleteCategoryState.value.errorMsg
                 )
-                categoriesVm.categoriesState.value.showAddDialog -> AddCategoryDialog(
-                    onConfirm = { categoriesVm.addCategory() },
-                    onCancel = { categoriesVm.toggleAddDialog(false) },
-                    name = categoriesVm.addCategoryState.value.name,
-                    setName = { newName -> categoriesVm.setName(newName)},
-                    clearError = { categoriesVm.clearAdditionError() },
-                    errorString = categoriesVm.addCategoryState.value.errorMsg,
+                /*
+                vm.categoriesState.value.showAddDialog -> AddCategoryDialog(
+                    onConfirm = { vm.addCategory() },
+                    onCancel = { vm.toggleAddDialog(false) },
+                    name = vm.addCategoryState.value.name,
+                    setName = { newName -> vm.setName(newName)},
+                    clearError = { vm.clearAdditionError() },
+                    errorString = vm.addCategoryState.value.errorMsg,
 
                 )
+
+                 */
                 //LazyColumn piirtää vain näytöllä näkyvät asiat, eikä siis tuhlaa resursseja ylimääräisten näytön ulkopuolisten asioiden piirtämiseen.
                 else -> LazyColumn() {
-                    items(categoriesVm.categoriesState.value.list) {
+                    items(vm.categoriesState.value.list) {item ->
+                        ListingItem(
+                            name = item.name,
+                            onEdit = { goToEditCategory(item.id) },
+                            onDelete = { vm.verifyCategoryRemoval(item.id) },
+                            onLongPress = {},
+                            onOpen = {},
+                            onUnselect = {}
+
+                        )
+
+
+
+
+                        /*
                         Column(modifier = Modifier.fillMaxWidth()) {
                             Row (
                                 Modifier
@@ -212,6 +228,13 @@ fun CategoriesScreen(onMenuClick: () -> Unit, goToEditCategory : (Int) -> Unit) 
                             }
 
                         }
+
+                         */
+
+
+
+
+
                     }
                 }
             }

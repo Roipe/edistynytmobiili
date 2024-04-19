@@ -14,6 +14,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ExitToApp
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Lock
+import androidx.compose.material.icons.filled.Login
+import androidx.compose.material.icons.filled.Logout
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -41,6 +43,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.edistynytmobiili.ui.theme.EdistynytMobiiliTheme
 import com.example.edistynytmobiili.view.CategoriesScreen
+import com.example.edistynytmobiili.view.CategoryListScreen
 import com.example.edistynytmobiili.view.EditCategoryScreen
 import com.example.edistynytmobiili.view.LoginScreen
 import com.example.edistynytmobiili.view.LogoutScreen
@@ -82,6 +85,7 @@ class MainActivity : ComponentActivity() {
                                             contentDescription = "Home"
                                         )
                                     })
+                                /*
                                 NavigationDrawerItem(
                                     label = { Text(text = "Login")},
                                     selected = false,
@@ -90,10 +94,12 @@ class MainActivity : ComponentActivity() {
                                         drawerState.close()} },
                                     icon = {
                                         Icon(
-                                            imageVector = Icons.Filled.Lock,
+                                            imageVector = Icons.Filled.Login,
                                             contentDescription = "Login"
                                         )
                                     })
+
+                                 */
                                 NavigationDrawerItem(
                                     label = { Text(text = "Logout")},
                                     selected = false,
@@ -102,7 +108,7 @@ class MainActivity : ComponentActivity() {
                                         drawerState.close()} },
                                     icon = {
                                         Icon(
-                                            imageVector = Icons.Filled.ExitToApp,
+                                            imageVector = Icons.Filled.Logout,
                                             contentDescription = "Logout"
                                         )
                                     })
@@ -110,64 +116,38 @@ class MainActivity : ComponentActivity() {
                             }
                         },
                         ) {
-
-                            NavHost(navController = navController, startDestination = "loginScreen") {
-                                //Navigoinnin mahdollistamiseksi NavHostiin tulee lisätä kohteille composablet
-                                composable(route = "categoriesScreen") {
-                                    /*onMenuClick-callbackillä menu iconia painamalla avataan drawer.
-                                    Käytännössä CategoriesScreenin koodissa tehty "Click-listener" kutsuu seuraavaa toimenpidettä
-                                    ikonia painaessa:
-                                     */
+                            //NavHost(navController = navController, startDestination = Screen.Login.route)
+                            NavHost(navController = navController, startDestination = Screen.CategoryList.route) {
+                                composable(route = Screen.Categories.route) {
                                     CategoriesScreen(onMenuClick = {
                                         scope.launch {
-                                            /*
-                                            if (drawerState.isClosed) {
-                                                drawerState.open()
-                                            }
-                                            else {
-                                                drawerState.close()
-                                            }
-                                             */
-                                            //Voidaan lyhentää .apply:llä
                                             drawerState.apply {
                                                 if (isClosed) open() else close()
                                             }
                                         }
-                                    },  //Näin CategoriesScreenillä ei tarvitse olla erikseen tietoa drawerin tilasta, jota MainActivity hallinnoi.
-
-                                        //Navigoinnissa voidaan välittää parametri lisäämällä routen perään kenoviiva ja itse parametri.
-                                        goToEditCategory = { navController.navigate("editCategoryScreen/${it}") }
+                                    },
+                                        //Screen-luokan EditCategory-objektilla on "routeWithId"-funktio, jolla toteutetaan parametrin välitys
+                                        goToEditCategory = { navController.navigate(Screen.EditCategory.routeWithId(it)) }
                                     )
 
                                 }
-
-                                //Composable loginScreenin navigointireittiä varten
-                                composable(route = "loginScreen") {
-                                    /*
-                                    LoginScreenille annetaan lambda-argumentti, jolla käytännössä välitetään navigointiohjeet sille.
-                                    Tällä callback-funktiolla Nav Controlleria ei tarvitse erikseen määritellä tai kutsua LoginScreenin koodissa,
-                                    sillä ohjeet välitetään tämän kautta.
-                                    */
+                                composable(route = Screen.Login.route) {
                                     LoginScreen(
-                                        goToCategories = { navController.navigate("categoriesScreen")},
-                                        goToRegistration = { navController.navigate("registrationScreen")}
+                                        goToCategories = { navController.navigate(Screen.Categories.route)},
+                                        goToRegistration = { navController.navigate(Screen.Registration.route)}
                                     )
                                 }
-                                //Parametriä vastaanottavalle routelle lisätään "wild card" merkintä routen perään
-                                //Tällä tunnisteella vastaanottavassa ViewModelissa haetaan parametri savedStateHandlesta.
-                                composable(route = "editCategoryScreen/{categoryId}") {
+                                composable(route = Screen.EditCategory.route) {
                                 EditCategoryScreen(
                                     backToCategories = { navController.navigateUp() },
-                                    goToCategories = { navController.navigate("categoriesScreen") }
+                                    goToCategories = { navController.navigate(Screen.Categories.route) }
                                 )
-
                                 }
-
-                                composable(route = "logoutScreen") {
+                                composable(route = Screen.Logout.route) {
                                     LogoutScreen(
                                         goToLogin = {
-                                            navController.navigate("loginScreen") {
-                                                popUpTo("loginScreen") { inclusive = true }
+                                            navController.navigate(Screen.Login.route) {
+                                                popUpTo(Screen.Login.route) { inclusive = true }
                                             }
                                         },
                                         cancelLogout = {navController.navigateUp()},
@@ -175,10 +155,18 @@ class MainActivity : ComponentActivity() {
                                     )
                                 }
 
-                                composable(route = "registrationScreen") {
-                                    RegistrationScreen(goToLogin = {navController.navigate("loginScreen")})
+                                composable(route = Screen.Registration.route) {
+                                    RegistrationScreen(goToLogin = {navController.navigate(Screen.Login.route) {
+                                        popUpTo(Screen.Login.route) { inclusive = true }
+                                    } })
                                 }
 
+                                composable(route = Screen.CategoryList.route) {
+                                    CategoryListScreen(
+                                        onMenuClick = {},
+                                        goToEditCategory = {}
+                                    )
+                                }
 
 
                             }

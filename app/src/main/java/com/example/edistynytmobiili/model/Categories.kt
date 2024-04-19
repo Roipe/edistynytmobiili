@@ -2,11 +2,12 @@ package com.example.edistynytmobiili.model
 
 import com.google.gson.annotations.SerializedName
 
-data class CategoriesState (
+data class CategoriesState(
     val list: List<CategoryItem> = emptyList(),
     val loading: Boolean = false,
-    val showAddDialog: Boolean = false,
-    val errorMsg: String? = null
+    //val showAddDialog: Boolean = false,
+    val errorMsg: String? = null,
+    val selectedList: List<CategoryItem> = emptyList()
 )
 data class CategoryState(
     //itemin default arvo on tyhjä CategoryItem (ei annettuja arvoja, joten id = 0, name = "")
@@ -15,14 +16,20 @@ data class CategoryState(
     val ok: Boolean = false,
     val errorMsg: String? = null
 )
-
+data class EditCategoryState(
+    val item: CategoryItem = CategoryItem(),
+    val status: Boolean = false,
+    val errorMsg: String? = null,
+)
 data class DeleteCategoryState(
     val id: Int = 0,
+    val status: Boolean = false,
     val errorMsg: String? = null
 )
 
 data class AddCategoryState(
     val name: String = "",
+    val status: Boolean = false,
     val errorMsg: String? = null
 )
 

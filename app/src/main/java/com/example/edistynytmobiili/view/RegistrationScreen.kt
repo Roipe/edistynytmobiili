@@ -25,12 +25,15 @@ import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -94,85 +97,103 @@ fun RegistrationConfirmation(
     }
 
 }
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RegistrationScreen(goToLogin : () -> Unit) {
     val vm: RegistrationViewModel = viewModel()
     val context = LocalContext.current
 
-    //LaunchedEffect errorin toastiin tulostamiselle, tällä tulostetaan muut kuin username/password errorit
-    LaunchedEffect(key1 = vm.registrationState.value.errorMsg) {
-        if (!vm.registrationState.value.isUsernameError && !vm.registrationState.value.isPasswordError)
-        {
-            vm.registrationState.value.errorMsg?.let {
-                Toast.makeText(context, it, Toast.LENGTH_LONG).show()
+    Scaffold(
+        topBar = { TopAppBar(title = {Text("Sign up") },
+            navigationIcon = {
+                IconButton(onClick = { goToLogin() }) {
+                    Icon(
+                        imageVector = Icons.Default.ArrowBack,
+                        contentDescription = "back to login"
+                    )
+                }
+            })
+        }
+    ) {
+        //LaunchedEffect errorin toastiin tulostamiselle, tällä tulostetaan muut kuin username/password errorit
+        LaunchedEffect(key1 = vm.registrationState.value.errorMsg) {
+            if (!vm.registrationState.value.isUsernameError && !vm.registrationState.value.isPasswordError) {
+                vm.registrationState.value.errorMsg?.let { message ->
+                    Toast.makeText(context, message, Toast.LENGTH_LONG).show()
+                }
             }
         }
-    }
 
 
-    Box(modifier = Modifier.fillMaxSize()) {
-        /*
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(start = 15.dp, top = 15.dp),
-            horizontalAlignment = Alignment.Start,
-            verticalArrangement = Arrangement.Top
-        ){
-            Text("Create a new account", fontSize = 18.sp, fontWeight = FontWeight.Medium)
-        }
-         */
-        when {
-            vm.registrationState.value.loading -> CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
-            vm.registrationState.value.status ->
-                RegistrationConfirmation(
-                    username = vm.registrationState.value.username,
-                    onContinue = { goToLogin() }
-                )
-            else -> Column(
-                modifier = Modifier.fillMaxSize(),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally,
-            ) {
-                UsernameTextField(
-                    username = vm.registrationState.value.username,
-                    onUsernameChange = { newValue ->
-                        vm.setUsername(newValue)
-                    },
-                    isError = vm.registrationState.value.isUsernameError,
-                    errorMsg = vm.registrationState.value.errorMsg
+        Box(modifier = Modifier
+            .fillMaxSize()
+            .padding(it)) {
+
+
+            when {
+                vm.registrationState.value.loading -> CircularProgressIndicator(
+                    modifier = Modifier.align(
+                        Alignment.Center
                     )
-                PasswordTextField(
-                    password = vm.registrationState.value.password,
-                    onPasswordChange = { newValue ->
-                        vm.setPassword(newValue)
-                    }
                 )
-                PasswordTextField(
-                    password = vm.registrationState.value.passwordConfirm,
-                    onPasswordChange = { newValue ->
-                        vm.setPasswordConfirm(newValue)
-                    },
-                    isError = vm.registrationState.value.isPasswordError,
-                    errorMsg = vm.registrationState.value.errorMsg,
-                    textFieldLabel = "Confirm password"
 
-                )
-                Button(
-                    enabled = vm.registrationState.value.username != ""
-                            && vm.registrationState.value.password != ""
-                            && vm.registrationState.value.passwordConfirm != "",
-                    onClick = { vm.register() },
-                    modifier = Modifier.fillMaxWidth(0.5f)
+                vm.registrationState.value.status ->
+                    RegistrationConfirmation(
+                        username = vm.registrationState.value.username,
+                        onContinue = { goToLogin() }
+                    )
+
+                else -> Column(
+                    modifier = Modifier
+                        //.fillMaxSize()
+                        .fillMaxWidth()
+                        .fillMaxHeight(0.7f),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
-                    Text(text = "Register")
-                }
-                DirectingText(
-                    directingText = "Already have an account?",
-                    textButtonText = "Log in",
-                    onClick = { goToLogin() },
-                )
 
+                    Text("Create your username and password", fontSize = 18.sp)
+                    Spacer(modifier = Modifier.height(30.dp))
+                    UsernameTextField(
+                        username = vm.registrationState.value.username,
+                        onUsernameChange = { newValue ->
+                            vm.setUsername(newValue)
+                        },
+                        isError = vm.registrationState.value.isUsernameError,
+                        errorMsg = vm.registrationState.value.errorMsg
+                    )
+                    PasswordTextField(
+                        password = vm.registrationState.value.password,
+                        onPasswordChange = { newValue ->
+                            vm.setPassword(newValue)
+                        }
+                    )
+                    PasswordTextField(
+                        password = vm.registrationState.value.passwordConfirm,
+                        onPasswordChange = { newValue ->
+                            vm.setPasswordConfirm(newValue)
+                        },
+                        isError = vm.registrationState.value.isPasswordError,
+                        errorMsg = vm.registrationState.value.errorMsg,
+                        textFieldLabel = "Confirm password"
+
+                    )
+                    Button(
+                        enabled = vm.registrationState.value.username != ""
+                                && vm.registrationState.value.password != ""
+                                && vm.registrationState.value.passwordConfirm != "",
+                        onClick = { vm.register() },
+                        modifier = Modifier.fillMaxWidth(0.5f)
+                    ) {
+                        Text(text = "Register")
+                    }
+                    DirectingText(
+                        directingText = "Already have an account?",
+                        textButtonText = "Log in",
+                        onClick = { goToLogin() },
+                    )
+
+                }
             }
         }
     }
