@@ -44,7 +44,6 @@ import com.example.edistynytmobiili.viewmodel.LoginViewModel
 @Composable
 //Loginscreenin argumentteihin navigointia varten callback-funktio
 fun LoginScreen(goToCategories: () -> Unit, goToRegistration: () -> Unit) {
-
     val vm: LoginViewModel = viewModel()
     val context = LocalContext.current
     Scaffold(

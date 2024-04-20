@@ -37,26 +37,6 @@ class CategoryViewModel(savedStateHandle: SavedStateHandle) : ViewModel() {
 
         }
     }
-    fun setName(newName: String) {
-        val item = _categoryState.value.item.copy(name = newName)
-        _categoryState.value = _categoryState.value.copy(item = item)
-    }
-    fun saveCategory() {
-        viewModelScope.launch {
-            try {
-                _categoryState.value = _categoryState.value.copy(loading = true)
-                categoriesService.editCategory(_categoryId, EditCategoryReq(name = _categoryState.value.item.name))
-                //Asetetaan ok-arvo, jolla annetaan Viewille tieto, että requesti onnistui ja se saa suorittaa poisnavigoinnin
-                setOk(true)
-            } catch(e: Exception) {
-                _categoryState.value = _categoryState.value.copy(errorMsg = e.message)
-            } finally {
-                _categoryState.value = _categoryState.value.copy(loading = false)
-            }
-        }
-    }
-    fun setOk(status: Boolean) {
-        _categoryState.value = _categoryState.value.copy(ok = status)
-    }
+
 
 }

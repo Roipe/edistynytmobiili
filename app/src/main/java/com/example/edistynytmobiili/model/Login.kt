@@ -11,7 +11,6 @@ data class LoginState(
     val errorMsg: String? = null,
     val status: Boolean = false
 )
-
 data class AuthReq(
     val username: String = "",
     val password: String  = ""

@@ -3,6 +3,7 @@ package com.example.edistynytmobiili
 sealed class Screen (val route: String) {
     data object Login: Screen("loginScreen")
     data object Logout: Screen("logoutScreen")
+    data object LogoutDialog: Screen("logoutDialog")
     data object Registration: Screen("registrationScreen")
     data object Categories: Screen("categoriesScreen")
     data object EditCategory: Screen("editCategoryScreen/{categoryId}") {
@@ -12,4 +13,5 @@ sealed class Screen (val route: String) {
     }
     data object CategoryList: Screen("categoryListScreen")
     data object AddCategory: Screen("addCategoryScreen")
+
 }

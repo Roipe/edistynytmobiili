@@ -80,7 +80,7 @@ fun AddCategoryScreen(onDone : () -> Unit, onCancel : () -> Unit) {
                     modifier = Modifier.align(Alignment.Center)
                 )
                 else -> {
-                    Column(horizontalAlignment = Alignment.CenterHorizontally,
+                    Column( horizontalAlignment = Alignment.CenterHorizontally,
                         verticalArrangement = Arrangement.SpaceEvenly,
                         modifier = Modifier.fillMaxHeight(0.5f)) {
                         Row (modifier = Modifier.fillMaxWidth(),

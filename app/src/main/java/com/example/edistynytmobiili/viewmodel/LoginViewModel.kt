@@ -14,7 +14,6 @@ import com.example.edistynytmobiili.model.AuthReq
 import com.example.edistynytmobiili.model.LoginState
 
 
-
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -26,6 +25,7 @@ class LoginViewModel(private val db: AccountDatabase = DbProvider.db) : ViewMode
     private val _loginState = mutableStateOf(LoginState())
     //Tehdään myös julkinen LoginReqModel-tyypin tilamuuttuja, jota hallinnoidaan privaatista muuttujasta
     val loginState: State<LoginState> = _loginState
+
 
 
     init {
@@ -43,6 +43,7 @@ class LoginViewModel(private val db: AccountDatabase = DbProvider.db) : ViewMode
 
     fun setLoginStatus(newStatus: Boolean) {
         _loginState.value = _loginState.value.copy(status = newStatus)
+
     }
     fun login() {
         viewModelScope.launch {
@@ -76,6 +77,7 @@ class LoginViewModel(private val db: AccountDatabase = DbProvider.db) : ViewMode
                 val accessToken = db.accountDao().getToken()
                 accessToken?.let {
                 authService.getAccount("Bearer $it")
+
                     setLoginStatus(true)
                 }
             } catch (e: Exception) {

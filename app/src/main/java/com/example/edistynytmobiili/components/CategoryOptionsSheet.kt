@@ -1,5 +1,8 @@
 package com.example.edistynytmobiili.components
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.scaleOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
@@ -24,6 +27,10 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -43,6 +50,7 @@ fun CategoryOptionsSheet (
     onClose: () -> Unit,
 ) {
     val optionColor = MaterialTheme.colorScheme.onBackground
+    var show by remember { mutableStateOf(false) }
     Box(modifier = Modifier
         // handle pointer input
         .pointerInput(onClose) { detectTapGestures { onClose() } }
@@ -56,7 +64,7 @@ fun CategoryOptionsSheet (
         }
         .fillMaxSize()
         .background(MaterialTheme.colorScheme.scrim.copy(alpha = 0.70f)),
-        contentAlignment = Alignment.Center
+        // = Alignment.Center
     )
     {
         Column (
@@ -64,31 +72,35 @@ fun CategoryOptionsSheet (
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier.padding(10.dp)
         ){
-
-            Box (){
-                ListingItem(name = name, onOpen = { onOpen() })
-                Column (
-                    horizontalAlignment = Alignment.End,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        //.padding(end=30.dp)
-                ){
-                    TextButton(onClick = {onClose()},
+                Box() {
+                    ListingItem(name = name, onOpen = { onOpen() })
+                    Column(
+                        horizontalAlignment = Alignment.End,
                         modifier = Modifier
-                            .clip(RoundedCornerShape(14.dp))
-                            .background(MaterialTheme.colorScheme.surfaceVariant)
-
+                            .fillMaxWidth()
+                        //.padding(end=30.dp)
                     ) {
-                        Icon(imageVector = Icons.Filled.Close, contentDescription = "Close",
-                            tint = optionColor
-                        )
-                        (Text("Close",
-                            color = optionColor
-                        ))
+                        TextButton(
+                            onClick = { onClose() },
+                            modifier = Modifier
+                                .clip(RoundedCornerShape(14.dp))
+                                .background(MaterialTheme.colorScheme.surfaceVariant)
+
+                        ) {
+                            Icon(
+                                imageVector = Icons.Filled.Close, contentDescription = "Close",
+                                tint = optionColor
+                            )
+                            (Text(
+                                "Close",
+                                color = optionColor
+                            ))
+                        }
                     }
+
                 }
 
-            }
+
             //ListingItem(name = "kissa")
             Spacer(modifier = Modifier.height(10.dp))
             Row (
@@ -126,6 +138,8 @@ fun CategoryOptionsSheet (
                 }
 
             }
+
+
         }
 
     }

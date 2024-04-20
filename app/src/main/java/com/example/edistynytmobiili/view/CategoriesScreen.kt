@@ -85,42 +85,6 @@ fun ConfirmCategoryDelete(onConfirm : () -> Unit, onCancel: () -> Unit, clearErr
     )
 }
 
-@Composable
-fun AddCategoryDialog(onConfirm: () -> Unit, onCancel: () -> Unit, name: String, setName : (String) -> Unit, clearError: () -> Unit, errorString: String?) {
-    val context = LocalContext.current
-    LaunchedEffect(key1 = errorString) {
-        //letin avulla voidaan suorittaa koodiblock mikäli nullable-arvo on jotain muuta kuin null.
-        errorString?.let {
-            Toast.makeText(context, it, Toast.LENGTH_LONG).show()
-            clearError()
-        }
-    }
-
-    AlertDialog(
-        title = {Text("Add category")},
-        text = {
-            Column() {
-                Text("Category name")
-                OutlinedTextField(
-                    value = name,
-                    onValueChange = { newValue ->
-                        setName(newValue)
-                    }
-                )
-            }  },
-        onDismissRequest = { /*TODO*/ },
-        confirmButton = {
-            TextButton(onClick = { onConfirm() }) {
-                Text("Add Category")
-            }
-        }, dismissButton = {
-            TextButton(onClick = { onCancel() }) {
-                Text("Cancel")
-            }
-        }
-    )
-}
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CategoriesScreen(
@@ -219,13 +183,18 @@ fun CategoriesScreen(
                 }
 
                 if (vm.categoriesState.value.selectedItem.name != "") {
-                    CategoryOptionsSheet(
-                        name = vm.categoriesState.value.selectedItem.name,
-                        onOpen = { /*TODO*/ },
-                        onEdit = { goToEditCategory(vm.categoriesState.value.selectedItem.id) },
-                        onDelete = { vm.setCategoryForRemoval(vm.categoriesState.value.selectedItem.id) },
-                        onClose = { vm.setSelectedItem() }
-                    )
+                    Row (){
+
+                        CategoryOptionsSheet(
+                            name = vm.categoriesState.value.selectedItem.name,
+                            onOpen = { /*TODO*/ },
+                            onEdit = { goToEditCategory(vm.categoriesState.value.selectedItem.id) },
+                            onDelete = { vm.setCategoryForRemoval(vm.categoriesState.value.selectedItem.id) },
+                            onClose = { vm.setSelectedItem() }
+
+                        )
+                    }
+
                 }
 
         }

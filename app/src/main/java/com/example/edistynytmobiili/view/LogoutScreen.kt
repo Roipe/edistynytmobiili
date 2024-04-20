@@ -36,36 +36,33 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.edistynytmobiili.viewmodel.LogoutViewModel
 
 @Composable
-fun LogoutConfirmationDialog(onConfirm : () -> Unit, onCancel: () -> Unit, errorString: String?) {
+fun LogoutConfirmationDialog(onConfirm : () -> Unit, onCancel: () -> Unit) {
 
-        val context = LocalContext.current
-        LaunchedEffect(key1 = errorString) {
-            //letin avulla voidaan suorittaa koodiblock mikäli nullable-arvo on jotain muuta kuin null.
-            errorString?.let {
-                Toast.makeText(context, it, Toast.LENGTH_LONG).show()
+    AlertDialog(
+        title = {Text("Confirm logout")},
+        text = { Text("Are you sure you want to logout?") },
+        onDismissRequest = { /*TODO*/ },
+        confirmButton = {
+            TextButton(onClick = { onConfirm() }) {
+                Text("Logout")
+            }
+        }, dismissButton = {
+            TextButton(onClick = { onCancel() }) {
+                Text("Cancel")
             }
         }
-
-        AlertDialog(
-            title = {Text("Confirm logout")},
-            text = { Text("Are you sure you want to logout?") },
-            onDismissRequest = { /*TODO*/ },
-            confirmButton = {
-                TextButton(onClick = { onConfirm() }) {
-                    Text("Logout")
-                }
-            }, dismissButton = {
-                TextButton(onClick = { onCancel() }) {
-                    Text("Cancel")
-                }
-            }
-        )
+    )
 
 }
 @Composable
-fun LogoutScreen(goToLogin : () -> Unit, cancelLogout : () -> Unit, exitApp : () -> Unit) {
+fun LogoutScreen(goToLogin : () -> Unit, exitApp : () -> Unit) {
     val vm: LogoutViewModel = viewModel()
-
+    val context = LocalContext.current
+    LaunchedEffect(key1 = vm.logoutState.value.errorMsg) {
+        vm.logoutState.value.errorMsg?.let {
+            Toast.makeText(context, it, Toast.LENGTH_LONG).show()
+        }
+    }
     /*
     LaunchedEffect(key1 = vm.logoutState.value.logoutStatus) {
         if (vm.logoutState.value.logoutStatus) {
@@ -79,20 +76,24 @@ fun LogoutScreen(goToLogin : () -> Unit, cancelLogout : () -> Unit, exitApp : ()
         when {
             vm.logoutState.value.loading -> CircularProgressIndicator(modifier = Modifier.align(
                 Alignment.Center))
+            /*
             !vm.logoutState.value.status -> LogoutConfirmationDialog(
                 onConfirm = { vm.logout() },
                 onCancel = { cancelLogout() },
                 errorString = vm.logoutState.value.errorMsg
 
             )
+
+             */
+            !vm.logoutState.value.status -> vm.logout()
             else -> Column(
                 modifier = Modifier.fillMaxHeight(),
                 verticalArrangement = Arrangement.SpaceEvenly,
                 horizontalAlignment = Alignment.CenterHorizontally
 
-                ) {
-                    Text("Logged out successfully!", fontSize = 24.sp)
-                    Text("\uD83D\uDC4D",fontSize = 64.sp)
+            ) {
+                Text("Logged out successfully!", fontSize = 24.sp)
+                Text("\uD83D\uDC4D",fontSize = 64.sp)
                 Spacer(modifier = Modifier.height(10.dp))
                 Row (
                     modifier = Modifier.fillMaxWidth(),

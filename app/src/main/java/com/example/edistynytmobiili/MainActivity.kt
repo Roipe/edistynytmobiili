@@ -2,7 +2,9 @@ package com.example.edistynytmobiili
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
+import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
+import androidx.activity.viewModels
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -34,7 +36,12 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -46,10 +53,10 @@ import com.example.edistynytmobiili.view.AddCategoryScreen
 import com.example.edistynytmobiili.view.CategoriesScreen
 import com.example.edistynytmobiili.view.EditCategoryScreen
 import com.example.edistynytmobiili.view.LoginScreen
+import com.example.edistynytmobiili.view.LogoutConfirmationDialog
 import com.example.edistynytmobiili.view.LogoutScreen
 import com.example.edistynytmobiili.view.RegistrationScreen
 import kotlinx.coroutines.launch
-
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -59,9 +66,12 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
+
                     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
+                    val showLogoutDialog = remember {mutableStateOf(false)}
                     val scope = rememberCoroutineScope()
                     val navController = rememberNavController()
+
                     //Modaali-ikkuna tulee päänäkymän päälle. Puhelimissa järkevä käyttää tätä.
                     ModalNavigationDrawer(
                         //Asetetaan navigation drawerille tila (auki/kiinni)
@@ -104,7 +114,9 @@ class MainActivity : ComponentActivity() {
                                     label = { Text(text = "Logout")},
                                     selected = false,
                                     onClick = { scope.launch {
-                                        navController.navigate("logoutScreen")
+                                        //navController.navigate(Screen.Logout.route)
+                                        navController.navigate(Screen.LogoutDialog.route)
+                                        //showLogoutDialog.value = true
                                         drawerState.close()} },
                                     icon = {
                                         Icon(
@@ -116,7 +128,8 @@ class MainActivity : ComponentActivity() {
                             }
                         },
                         ) {
-                            NavHost(navController = navController, startDestination = Screen.Login.route) {
+                            NavHost(navController = navController, startDestination = Screen.Login.route)
+                            {
                                 composable(route = Screen.Categories.route) {
                                     CategoriesScreen(onMenuClick = {
                                         scope.launch {
@@ -144,15 +157,16 @@ class MainActivity : ComponentActivity() {
                                 )
                                 }
                                 composable(route = Screen.Logout.route) {
+                                    BackHandler(onBack = { })
                                     LogoutScreen(
                                         goToLogin = {
                                             navController.navigate(Screen.Login.route) {
                                                 popUpTo(Screen.Login.route) { inclusive = true }
                                             }
                                         },
-                                        cancelLogout = {navController.navigateUp()},
                                         exitApp = {finish()}
                                     )
+
                                 }
 
                                 composable(route = Screen.Registration.route) {
@@ -168,14 +182,31 @@ class MainActivity : ComponentActivity() {
                                     )
                                 }
 
+                                composable(route = Screen.LogoutDialog.route) {
+                                    LogoutConfirmationDialog(
+                                        onConfirm = { navController.navigate(Screen.Logout.route) {
+                                                popUpTo(Screen.Logout.route) { inclusive = true }
+                                            }
+                                        },
+                                        onCancel = {
+                                            navController.navigateUp()
+                                        }
+                                    )
+                                }
+
+
+
 
 
                             }
 
+
                         }
+
                 }
             }
         }
     }
 }
+
 

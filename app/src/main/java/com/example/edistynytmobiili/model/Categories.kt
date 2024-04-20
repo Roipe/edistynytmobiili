@@ -9,23 +9,27 @@ data class CategoriesState(
     val selectedItem: CategoryItem = CategoryItem()
 )
 data class CategoryState(
-    //itemin default arvo on tyhjä CategoryItem (ei annettuja arvoja, joten id = 0, name = "")
     val item: CategoryItem = CategoryItem(),
     val loading: Boolean = false,
-    val ok: Boolean = false,
     val errorMsg: String? = null
 )
-data class DeleteCategoryState(
-    val id: Int = 0,
-    val errorMsg: String? = null
-)
-
 data class AddCategoryState(
     val name: String = "",
     val loading: Boolean = false,
     val done: Boolean = false,
     val isError: Boolean = false,
-    val errorMsg: String? = null,
+    val errorMsg: String? = null
+)
+data class EditCategoryState(
+    val item: CategoryItem = CategoryItem(),
+    val loading: Boolean = false,
+    val done: Boolean = false,
+    val isError: Boolean = false,
+    val errorMsg: String? = null
+)
+data class DeleteCategoryState(
+    val id: Int = 0,
+    val errorMsg: String? = null
 )
 
 data class CategoryItem(

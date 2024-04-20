@@ -22,9 +22,6 @@ class CategoriesViewModel : ViewModel() {
     private val _deleteCategoryState = mutableStateOf(DeleteCategoryState())
     val deleteCategoryState: State<DeleteCategoryState> = _deleteCategoryState
 
-    private val _addCategoryState = mutableStateOf(AddCategoryState())
-    val addCategoryState: State<AddCategoryState> = _addCategoryState
-
 
     //Esimerkiksi rajapintakutsut tehdään init:n sisällä. Tämän sisältämä koodi suoritetaan näytön renderauksen yhteydessä.
     init {
@@ -40,33 +37,11 @@ class CategoriesViewModel : ViewModel() {
     fun selectedItem (id: Int) : Boolean {
         return _categoriesState.value.selectedItem.id == id
     }
-    fun setName(newName: String) {
-        _addCategoryState.value = _addCategoryState.value.copy(name = newName)
-    }
-
-    fun addCategory() {
-        viewModelScope.launch {
-            try {
-                _categoriesState.value = _categoriesState.value.copy(loading = true)
-                categoriesService.createCategory(AddCategoryReq(_addCategoryState.value.name))
-                _addCategoryState.value = _addCategoryState.value.copy(name = "")
-                refresh()
-
-            } catch (e: Exception) {
-                _addCategoryState.value = _addCategoryState.value.copy(errorMsg = e.message)
-            } finally {
-                _categoriesState.value = _categoriesState.value.copy(loading = false)
-            }
-        }
-    }
 
     fun setCategoryForRemoval(categoryId: Int = 0) {
         _deleteCategoryState.value = _deleteCategoryState.value.copy(id = categoryId)
     }
 
-    fun clearAddError() {
-        _addCategoryState.value = _addCategoryState.value.copy(errorMsg = null)
-    }
 
     fun clearDeletionError() {
         _deleteCategoryState.value = _deleteCategoryState.value.copy(errorMsg = null)
