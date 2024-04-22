@@ -7,6 +7,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.edistynytmobiili.api.categoriesService
+import com.example.edistynytmobiili.api.rentalServices
 import com.example.edistynytmobiili.model.DeleteRentalItemState
 import com.example.edistynytmobiili.model.RentalItem
 import com.example.edistynytmobiili.model.RentalItemsState
@@ -43,12 +44,9 @@ class RentalItemsViewModel(savedStateHandle: SavedStateHandle) : ViewModel() {
             try {
                 _rentalItemsState.value = _rentalItemsState.value.copy(loading = true)
                 val categoryResponse = categoriesService.getCategory(_categoryId).category.name
-                val itemsResponse = categoriesService.getItems(_categoryId).items
+                val itemsResponse = rentalServices.getItems(_categoryId).items
                 _rentalItemsState.value = _rentalItemsState.value.copy(
                     categoryName = categoryResponse, list = itemsResponse)
-                //Tallennetaan muuttujaan Api-pyynnöstä saatava vastaus
-                //val response = categoriesService.getCategories()
-                //_rentalListState.value = _rentalListState.value.copy(list = response.categories)
             } catch(e: Exception) {
                 _rentalItemsState.value = _rentalItemsState.value.copy(errorMsg = e.message)
             } finally {

@@ -39,12 +39,11 @@ interface CategoriesApi {
     @POST("category/")
     suspend fun createCategory(@Body req: AddCategoryReq) : CategoryResponse
     @PUT("category/{id}")
-    suspend fun editCategory(@Path("id") id: Int, @Body saveCategoryReq: EditCategoryReq) : CategoryResponse
+    suspend fun editCategory(@Path("id") id: Int, @Body editCategoryReq: EditCategoryReq) : CategoryResponse
     @DELETE("category/{id}")
     suspend fun removeCategory(@Path("id") id: Int)
 
-    @GET("category/{id}/items")
-    suspend fun getItems(@Path("id") id: Int): RentalItemsResponse
+
 
 
 }

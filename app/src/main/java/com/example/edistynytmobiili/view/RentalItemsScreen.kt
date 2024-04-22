@@ -3,6 +3,7 @@ package com.example.edistynytmobiili.view
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
@@ -12,6 +13,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
@@ -29,13 +31,17 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.edistynytmobiili.components.AddNewListing
+import com.example.edistynytmobiili.components.CategoryOptionsSheet
 import com.example.edistynytmobiili.components.SelectableListingItem
 import com.example.edistynytmobiili.viewmodel.RentalItemsViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-//onBack: () -> Unit, goToEditItem: (Int) -> Unit
-fun RentalItemsScreen () {
+fun RentalItemsScreen (
+    goToRentItem: () -> Unit,
+    goToAddItem:() -> Unit,
+    goToEditItem: (Int) -> Unit,
+    onBack: () -> Unit) {
 
     val vm: RentalItemsViewModel = viewModel()
 
@@ -49,7 +55,12 @@ fun RentalItemsScreen () {
                     }) {
                         Icon(Icons.Default.ArrowBack, contentDescription = "Back")
                     }
+                },
+                actions = {
+                IconButton(onClick = { }) {
+                    Icon(imageVector = Icons.Filled.Add, contentDescription = "Add Category")
                 }
+            }
 
             )
         }
@@ -118,10 +129,20 @@ fun RentalItemsScreen () {
                         Spacer(modifier = Modifier.height(5.dp))
                     }
 
-
-
-
                 }
+            if (vm.rentalItemsState.value.selectedItem.name != "") {
+                Row (){
+                    CategoryOptionsSheet(
+                        name = vm.rentalItemsState.value.selectedItem.name,
+                        onOpen = {  },
+                        onEdit = { goToEditItem(vm.rentalItemsState.value.selectedItem.id) },
+                        onDelete = {  },
+                        onClose = { vm.setSelectedItem() }
+
+                    )
+                }
+
+            }
 
 
 

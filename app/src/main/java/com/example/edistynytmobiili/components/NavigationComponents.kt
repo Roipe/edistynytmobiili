@@ -42,6 +42,7 @@ import com.example.edistynytmobiili.menuScreens
 import com.example.edistynytmobiili.view.AddCategoryScreen
 import com.example.edistynytmobiili.view.CategoriesScreen
 import com.example.edistynytmobiili.view.EditCategoryScreen
+import com.example.edistynytmobiili.view.EditRentalItemScreen
 import com.example.edistynytmobiili.view.LoginScreen
 import com.example.edistynytmobiili.view.LogoutConfirmationDialog
 import com.example.edistynytmobiili.view.LogoutScreen
@@ -172,9 +173,19 @@ fun NavigationHost(
 
         composable(route = Screen.RentalItems.route) {
             RentalItemsScreen(
-
+                goToRentItem = {},
+                goToAddItem = {},
+                goToEditItem = { navController.navigate(Screen.EditRentalItem.routeWithId(it)) },
+                onBack = { navController.navigateUp() },
             )
         }
+        composable(route = Screen.EditRentalItem.route) {
+            EditRentalItemScreen(
+                onDone = { navController.navigate(Screen.RentalItems.routeWithId(it)) },
+                onCancel = {navController.navigateUp()}
+            )
+        }
+
 
 
     }

@@ -25,6 +25,7 @@ data class AddRentalItemState(
 
 data class EditRentalItemState(
     val item: RentalItem = RentalItem(),
+    val categoryId: Int = 0,
     val loading: Boolean = false,
     val done: Boolean = false,
     val isError: Boolean = false,
@@ -35,7 +36,6 @@ data class DeleteRentalItemState(
     val errorMsg: String? = null
 )
 
-
 data class RentalItem(
     @SerializedName("rental_item_id")
     val id: Int = 0,
@@ -43,4 +43,25 @@ data class RentalItem(
     val name: String = "")
 
 data class RentalItemsResponse(val items: List<RentalItem> = emptyList())
-data class RentalItemResponse(val item: RentalItem = RentalItem())
+data class RentalItemResponse(
+    val item: RentalItem = RentalItem(),
+    @SerializedName("category_category")
+    val category: CategoryItem = CategoryItem()
+)
+
+data class RentalItemStateRes(
+    @SerializedName("rental_item_name")
+    val name: String = "",
+    @SerializedName("rental_item_state")
+    val availability: String = ""
+)
+data class EditRentalItemReq(
+    @SerializedName("rental_item_name")
+    val name: String = ""
+)
+data class AddRentalItemReq(
+    @SerializedName("rental_item_name")
+    val name: String = "",
+    @SerializedName("created_by_user_id")
+    val userId: Int = 0
+)
