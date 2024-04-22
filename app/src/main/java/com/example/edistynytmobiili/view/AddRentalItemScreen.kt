@@ -1,32 +1,24 @@
 package com.example.edistynytmobiili.view
 
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AddPhotoAlternate
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.BorderOuter
-import androidx.compose.material.icons.filled.InsertPhoto
-import androidx.compose.material.icons.outlined.BorderOuter
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -39,20 +31,22 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.edistynytmobiili.components.NameTextField
 import com.example.edistynytmobiili.viewmodel.AddCategoryViewModel
+import com.example.edistynytmobiili.viewmodel.AddRentalItemViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AddCategoryScreen(onDone : () -> Unit, onCancel : () -> Unit) {
-    val vm : AddCategoryViewModel = viewModel()
+fun AddRentalItemScreen(onDone : (Int) -> Unit, onCancel : () -> Unit) {
+    val vm : AddRentalItemViewModel = viewModel()
     val context = LocalContext.current
-    LaunchedEffect(key1 = vm.addCategoryState.value.done) {
-        if (vm.addCategoryState.value.done) {
-            onDone()
+    LaunchedEffect(key1 = vm.addRentalItemState.value.done) {
+        if (vm.addRentalItemState.value.done) {
+            Log.d("id täs", "${ vm.addRentalItemState.value.categoryId }")
+            onDone(vm.addRentalItemState.value.categoryId)
         }
     }
-    LaunchedEffect(key1 = vm.addCategoryState.value.errorMsg) {
-        vm.addCategoryState.value.errorMsg?.let {
-            Toast.makeText(context, vm.addCategoryState.value.errorMsg, Toast.LENGTH_LONG).show()
+    LaunchedEffect(key1 = vm.addRentalItemState.value.errorMsg) {
+        vm.addRentalItemState.value.errorMsg?.let {
+            Toast.makeText(context, vm.addRentalItemState.value.errorMsg, Toast.LENGTH_LONG).show()
         }
     }
     /*
@@ -64,7 +58,7 @@ fun AddCategoryScreen(onDone : () -> Unit, onCancel : () -> Unit) {
 
     Scaffold(
         topBar = {
-            TopAppBar(title = { Text("Add a new category") },
+            TopAppBar(title = { Text("Add a new item") },
                 navigationIcon = {
                     IconButton(onClick = { onCancel() }) {
                         Icon(
@@ -84,7 +78,7 @@ fun AddCategoryScreen(onDone : () -> Unit, onCancel : () -> Unit) {
             contentAlignment = Alignment.TopCenter
         ) {
             when {
-                vm.addCategoryState.value.loading -> CircularProgressIndicator(
+                vm.addRentalItemState.value.loading -> CircularProgressIndicator(
                     modifier = Modifier.align(Alignment.Center)
                 )
                 else -> {
@@ -102,13 +96,13 @@ fun AddCategoryScreen(onDone : () -> Unit, onCancel : () -> Unit) {
                             Text("Select picture")
                         }
 
-                        NameTextField(name = vm.addCategoryState.value.name,
+                        NameTextField(name = vm.addRentalItemState.value.name,
                             onNameChange = { newName ->
                                 vm.setName(newName)
                             },
-                            textFieldLabel = "Category name",
-                            isError = !vm.addCategoryState.value.errorMsg.isNullOrBlank(),
-                            errorMsg = vm.addCategoryState.value.errorMsg
+                            textFieldLabel = "Item name",
+                            isError = !vm.addRentalItemState.value.errorMsg.isNullOrBlank(),
+                            errorMsg = vm.addRentalItemState.value.errorMsg
                         )
                         Row (modifier = Modifier.fillMaxWidth(),
                             horizontalArrangement = Arrangement.SpaceEvenly){
@@ -120,9 +114,9 @@ fun AddCategoryScreen(onDone : () -> Unit, onCancel : () -> Unit) {
                                 Text("Cancel")
                             }
                             Button(
-                                enabled = vm.addCategoryState.value.name != "",
+                                enabled = vm.addRentalItemState.value.name != "",
                                 onClick = {
-                                    vm.addCategory()
+                                    vm.addRentalItem()
                                 }
                             ) {
                                 Text("Save")
@@ -136,4 +130,5 @@ fun AddCategoryScreen(onDone : () -> Unit, onCancel : () -> Unit) {
             }
         }
     }
+
 }

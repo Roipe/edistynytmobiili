@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -31,7 +32,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.edistynytmobiili.components.AddNewListing
-import com.example.edistynytmobiili.components.CategoryOptionsSheet
+import com.example.edistynytmobiili.components.ActionOptionsSheet
 import com.example.edistynytmobiili.components.SelectableListingItem
 import com.example.edistynytmobiili.viewmodel.RentalItemsViewModel
 
@@ -39,7 +40,7 @@ import com.example.edistynytmobiili.viewmodel.RentalItemsViewModel
 @Composable
 fun RentalItemsScreen (
     goToRentItem: () -> Unit,
-    goToAddItem:() -> Unit,
+    goToAddItem:(Int) -> Unit,
     goToEditItem: (Int) -> Unit,
     onBack: () -> Unit) {
 
@@ -51,13 +52,13 @@ fun RentalItemsScreen (
                 //Yläpalkin ikonia painettaessa launchataan coroutine, joka avaa tai sulkee drawerin sen tilasta riippuen.
                 navigationIcon = {
                     IconButton(onClick = {
-                        //onBack()
+                        onBack()
                     }) {
                         Icon(Icons.Default.ArrowBack, contentDescription = "Back")
                     }
                 },
                 actions = {
-                IconButton(onClick = { }) {
+                IconButton(onClick = { goToAddItem(vm.categoryId)}) {
                     Icon(imageVector = Icons.Filled.Add, contentDescription = "Add Category")
                 }
             }
@@ -110,11 +111,11 @@ fun RentalItemsScreen (
                                 name = item.name,
                                 onSelect = {vm.setSelectedItem(item.name, item.id)},
                                 onOpen = {},
-                                isSelected = vm.isSelectedItem(item.id)
+                                isSelected = vm.isSelectedItem(item.id),
                             )
                             Button(
                                 modifier = Modifier.padding(bottom = 5.dp, end = 10.dp),
-                                onClick = { /*TODO*/ },
+                                onClick = {  },
                                 shape = RoundedCornerShape(5.dp)) {
                                 Text("Rent")
                             }
@@ -132,7 +133,7 @@ fun RentalItemsScreen (
                 }
             if (vm.rentalItemsState.value.selectedItem.name != "") {
                 Row (){
-                    CategoryOptionsSheet(
+                    ActionOptionsSheet(
                         name = vm.rentalItemsState.value.selectedItem.name,
                         onOpen = {  },
                         onEdit = { goToEditItem(vm.rentalItemsState.value.selectedItem.id) },

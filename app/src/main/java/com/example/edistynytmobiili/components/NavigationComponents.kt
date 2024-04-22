@@ -2,6 +2,7 @@ package com.example.edistynytmobiili.components
 
 
 import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -20,6 +21,7 @@ import androidx.compose.material3.NavigationDrawerItem
 import androidx.compose.material3.NavigationDrawerItemDefaults
 
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 
 import androidx.compose.runtime.Composable
@@ -27,9 +29,12 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavHostController
@@ -40,6 +45,7 @@ import com.example.edistynytmobiili.Screen
 
 import com.example.edistynytmobiili.menuScreens
 import com.example.edistynytmobiili.view.AddCategoryScreen
+import com.example.edistynytmobiili.view.AddRentalItemScreen
 import com.example.edistynytmobiili.view.CategoriesScreen
 import com.example.edistynytmobiili.view.EditCategoryScreen
 import com.example.edistynytmobiili.view.EditRentalItemScreen
@@ -174,13 +180,20 @@ fun NavigationHost(
         composable(route = Screen.RentalItems.route) {
             RentalItemsScreen(
                 goToRentItem = {},
-                goToAddItem = {},
+                goToAddItem = { navController.navigate(Screen.AddRentalItem.routeWithId(it)) },
                 goToEditItem = { navController.navigate(Screen.EditRentalItem.routeWithId(it)) },
-                onBack = { navController.navigateUp() },
+                onBack = { navController.navigate(Screen.Categories.route) },
             )
         }
         composable(route = Screen.EditRentalItem.route) {
             EditRentalItemScreen(
+                onDone = { navController.navigate(Screen.RentalItems.routeWithId(it)) },
+                onCancel = {navController.navigateUp()}
+            )
+        }
+
+        composable(route = Screen.AddRentalItem.route) {
+            AddRentalItemScreen(
                 onDone = { navController.navigate(Screen.RentalItems.routeWithId(it)) },
                 onCancel = {navController.navigateUp()}
             )
@@ -210,6 +223,22 @@ fun DrawerSheet(
                     }
                 }
             )
+        }
+    }
+}
+
+@Composable
+fun DirectingText(
+    directingText: String,
+    textButtonText: String,
+    onClick : () -> Unit,
+    fontSize: TextUnit = 14.sp
+
+) {
+    Row (verticalAlignment = Alignment.CenterVertically){
+        Text(text = directingText, fontSize = fontSize)
+        TextButton(onClick = { onClick() }) {
+            Text(text = textButtonText, fontSize = fontSize)
         }
     }
 }

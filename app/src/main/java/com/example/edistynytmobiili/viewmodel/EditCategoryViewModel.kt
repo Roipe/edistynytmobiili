@@ -40,18 +40,19 @@ class EditCategoryViewModel(savedStateHandle: SavedStateHandle) : ViewModel() {
     fun editCategory() {
         viewModelScope.launch {
             try {
+                clearError()
                 _editCategoryState.value = _editCategoryState.value.copy(loading = true)
                 categoriesService.editCategory(_categoryId, EditCategoryReq(name = _editCategoryState.value.item.name))
                 _editCategoryState.value = _editCategoryState.value.copy(done = true)
             } catch(e: Exception) {
-                _editCategoryState.value = _editCategoryState.value.copy(errorMsg = e.message, isError = true)
+                _editCategoryState.value = _editCategoryState.value.copy(errorMsg = e.message)
             } finally {
                 _editCategoryState.value = _editCategoryState.value.copy(loading = false)
             }
         }
     }
-    fun clearError() {
-        _editCategoryState.value = _editCategoryState.value.copy(errorMsg = null, isError = false)
+    private fun clearError() {
+        _editCategoryState.value = _editCategoryState.value.copy(errorMsg = null)
     }
 
 

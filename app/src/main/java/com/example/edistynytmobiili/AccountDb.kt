@@ -32,6 +32,7 @@ abstract class AccountDao {
 
     @Query("DELETE FROM account")
     abstract suspend fun removeTokens()
+
 }
 
 //Määritellään tietokannalle luokka ja funktio.

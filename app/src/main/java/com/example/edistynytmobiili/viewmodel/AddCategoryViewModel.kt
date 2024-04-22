@@ -21,16 +21,20 @@ class AddCategoryViewModel : ViewModel() {
     fun addCategory() {
         viewModelScope.launch {
             try {
+                clearError()
                 _addCategoryState.value = _addCategoryState.value.copy(loading = true)
                 categoriesService.createCategory(AddCategoryReq(_addCategoryState.value.name))
                 _addCategoryState.value = _addCategoryState.value.copy(done = true)
 
             } catch (e: Exception) {
-                _addCategoryState.value = _addCategoryState.value.copy(errorMsg = e.message, isError = true)
+                _addCategoryState.value = _addCategoryState.value.copy(errorMsg = e.message)
             } finally {
                 _addCategoryState.value = _addCategoryState.value.copy(loading = false)
             }
         }
+    }
+    fun clearError() {
+        _addCategoryState.value = _addCategoryState.value.copy(errorMsg = null)
     }
 
 }

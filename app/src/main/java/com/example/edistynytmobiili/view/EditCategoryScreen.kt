@@ -46,28 +46,31 @@ fun EditCategoryScreen(goToCategories: () -> Unit, onCancel: () -> Unit) {
             goToCategories()
         }
     }
+    LaunchedEffect(key1 = vm.editCategoryState.value.errorMsg) {
+        vm.editCategoryState.value.errorMsg?.let {
+            Toast.makeText(context, vm.editCategoryState.value.errorMsg, Toast.LENGTH_LONG).show()
+        }
+
+    }
+    /*
     LaunchedEffect(key1 = vm.editCategoryState.value.isError) {
         if (vm.editCategoryState.value.isError) {
             Toast.makeText(context, vm.editCategoryState.value.errorMsg, Toast.LENGTH_LONG).show()
         }
     }
 
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text("Edit category")},
-                navigationIcon = {
-                    IconButton(onClick = { onCancel() }) {
-                        Icon(
-                            imageVector = Icons.Default.ArrowBack,
-                            contentDescription = "Back button"
-                        )
-                    }
-                }
-            )
+     */
 
-        }
-    ){
+    Scaffold( topBar = {
+        TopAppBar(
+            title = { Text("Edit category")},
+            navigationIcon = {
+                IconButton(onClick = { onCancel() }) {
+                    Icon(imageVector = Icons.Default.ArrowBack, contentDescription = "Back button")
+                }
+            }
+        )
+    } ){
         Box(
             modifier = Modifier
                 //.fillMaxSize()
@@ -96,8 +99,8 @@ fun EditCategoryScreen(goToCategories: () -> Unit, onCancel: () -> Unit) {
                                 vm.setName(newName)
                             },
                             textFieldLabel = "Category name",
-                            isError = vm.editCategoryState.value.isError,
-                            errorMsg = "Invalid name"
+                            isError = !vm.editCategoryState.value.errorMsg.isNullOrBlank(),
+                            errorMsg = vm.editCategoryState.value.errorMsg
                         )
                         Spacer(Modifier.height(10.dp))
                         Row (

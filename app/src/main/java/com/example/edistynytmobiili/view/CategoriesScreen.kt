@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -49,7 +50,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 
 import com.example.edistynytmobiili.components.AddNewListing
-import com.example.edistynytmobiili.components.CategoryOptionsSheet
+import com.example.edistynytmobiili.components.ActionOptionsSheet
 
 import com.example.edistynytmobiili.components.SelectableListingItem
 import com.example.edistynytmobiili.viewmodel.CategoriesViewModel
@@ -183,7 +184,7 @@ fun CategoriesScreen(
                 if (vm.categoriesState.value.selectedItem.name != "") {
                     Row (){
 
-                        CategoryOptionsSheet(
+                        ActionOptionsSheet(
                             name = vm.categoriesState.value.selectedItem.name,
                             onOpen = { goToRentalItems(vm.categoriesState.value.selectedItem.id) },
                             onEdit = { goToEditCategory(vm.categoriesState.value.selectedItem.id) },

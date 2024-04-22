@@ -18,14 +18,12 @@ data class AddCategoryState(
     val name: String = "",
     val loading: Boolean = false,
     val done: Boolean = false,
-    val isError: Boolean = false,
     val errorMsg: String? = null
 )
 data class EditCategoryState(
     val item: CategoryItem = CategoryItem(),
     val loading: Boolean = false,
     val done: Boolean = false,
-    val isError: Boolean = false,
     val errorMsg: String? = null
 )
 data class DeleteCategoryState(

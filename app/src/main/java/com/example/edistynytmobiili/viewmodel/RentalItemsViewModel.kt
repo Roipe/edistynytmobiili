@@ -6,15 +6,18 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.edistynytmobiili.DbProvider
+import com.example.edistynytmobiili.api.authService
 import com.example.edistynytmobiili.api.categoriesService
 import com.example.edistynytmobiili.api.rentalServices
 import com.example.edistynytmobiili.model.DeleteRentalItemState
+import com.example.edistynytmobiili.model.RentRentalItemReq
 import com.example.edistynytmobiili.model.RentalItem
 import com.example.edistynytmobiili.model.RentalItemsState
 import kotlinx.coroutines.launch
 
 class RentalItemsViewModel(savedStateHandle: SavedStateHandle) : ViewModel() {
-    private val _categoryId = savedStateHandle.get<String>("categoryId")?.toIntOrNull() ?: 0
+    val categoryId = savedStateHandle.get<String>("categoryId")?.toIntOrNull() ?: 0
 
 
 
@@ -43,8 +46,8 @@ class RentalItemsViewModel(savedStateHandle: SavedStateHandle) : ViewModel() {
         viewModelScope.launch {
             try {
                 _rentalItemsState.value = _rentalItemsState.value.copy(loading = true)
-                val categoryResponse = categoriesService.getCategory(_categoryId).category.name
-                val itemsResponse = rentalServices.getItems(_categoryId).items
+                val categoryResponse = categoriesService.getCategory(categoryId).category.name
+                val itemsResponse = rentalServices.getItems(categoryId).items
                 _rentalItemsState.value = _rentalItemsState.value.copy(
                     categoryName = categoryResponse, list = itemsResponse)
             } catch(e: Exception) {
@@ -54,5 +57,29 @@ class RentalItemsViewModel(savedStateHandle: SavedStateHandle) : ViewModel() {
                 _rentalItemsState.value = _rentalItemsState.value.copy(loading = false)
             }
         }
+    }
+
+    /*
+    fun rentRentalItem(itemId: Int) {
+        try {
+            _rentalItemsState.value = _rentalItemsState.value.copy(loading = true)
+            rentalServices.rentItem(id = itemId, RentRentalItemReq())
+            _rentalItemsState.value = _rentalItemsState.value.copy(
+                categoryName = categoryResponse, list = itemsResponse)
+        } catch(e: Exception) {
+            _rentalItemsState.value = _rentalItemsState.value.copy(errorMsg = e.message)
+        } finally {
+            //Asetetaan sivu pois lataustilasta
+            _rentalItemsState.value = _rentalItemsState.value.copy(loading = false)
+        }
+    }
+    */
+    private suspend fun checkAccess() : Boolean {
+        val accessToken = DbProvider.db.accountDao().getToken()
+        accessToken?.let {
+            authService.getAccount("Bearer $it")
+            return true
+        }
+        return false
     }
 }

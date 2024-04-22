@@ -30,6 +30,11 @@ sealed class Screen (val route: String, val title: String = "", val icon: ImageV
             return "editRentalItem/$id"
         }
     }
+    data object AddRentalItem: Screen(route = "addRentalItem/{categoryId}") {
+        fun routeWithId(id: Int) : String {
+            return "addRentalItem/$id"
+        }
+    }
 
 }
 internal val menuScreens = listOf(

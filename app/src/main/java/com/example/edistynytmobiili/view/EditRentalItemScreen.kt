@@ -43,10 +43,19 @@ fun EditRentalItemScreen(onDone: (Int) -> Unit, onCancel: () -> Unit) {
             onDone(vm.editRentalItemState.value.categoryId)
         }
     }
+    /*
     LaunchedEffect(key1 = vm.editRentalItemState.value.isError) {
         if (vm.editRentalItemState.value.isError) {
             Toast.makeText(context, vm.editRentalItemState.value.errorMsg, Toast.LENGTH_LONG).show()
         }
+    }
+
+     */
+    LaunchedEffect(key1 = vm.editRentalItemState.value.errorMsg) {
+        vm.editRentalItemState.value.errorMsg?.let {
+            Toast.makeText(context, vm.editRentalItemState.value.errorMsg, Toast.LENGTH_LONG).show()
+        }
+
     }
 
     Scaffold( topBar = {
@@ -84,8 +93,8 @@ fun EditRentalItemScreen(onDone: (Int) -> Unit, onCancel: () -> Unit) {
                                 vm.setName(newName)
                             },
                             textFieldLabel = "Category name",
-                            isError = vm.editRentalItemState.value.isError,
-                            errorMsg = "Invalid name"
+                            isError = !vm.editRentalItemState.value.errorMsg.isNullOrBlank(),
+                            errorMsg = vm.editRentalItemState.value.errorMsg
                         )
                         Spacer(Modifier.height(10.dp))
                         Row (

@@ -1,7 +1,8 @@
 package com.example.edistynytmobiili.model
 
 import com.google.gson.annotations.SerializedName
-
+import com.squareup.moshi.Json
+import com.squareup.moshi.JsonClass
 
 
 data class LoginState(
@@ -11,6 +12,8 @@ data class LoginState(
     val errorMsg: String? = null,
     val status: Boolean = false
 )
+
+
 data class AuthReq(
     val username: String = "",
     val password: String  = ""
@@ -45,9 +48,20 @@ data class RegReq(
 )
 
 data class RegRes(
-    @SerializedName("username")
     val username: String = ""
 )
 
-
+data class AuthUser(
+    val username: String = "",
+    @SerializedName("auth_user_id")
+    val id: Int = 0,
+    @SerializedName("auth_role_auth_role")
+    val role: AuthRole = AuthRole()
+)
+data class AuthRole(
+    @SerializedName("role_name")
+    val name: String = "",
+    @SerializedName("auth_role_id")
+    val id: Int = 0
+)
 

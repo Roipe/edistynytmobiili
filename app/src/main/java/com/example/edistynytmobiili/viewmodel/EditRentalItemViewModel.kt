@@ -1,10 +1,15 @@
 package com.example.edistynytmobiili.viewmodel
 
+import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.edistynytmobiili.AccountDatabase
+import com.example.edistynytmobiili.DbProvider
+import com.example.edistynytmobiili.DbProvider.db
+import com.example.edistynytmobiili.api.authService
 import com.example.edistynytmobiili.api.categoriesService
 import com.example.edistynytmobiili.api.rentalServices
 import com.example.edistynytmobiili.model.EditCategoryReq
@@ -13,7 +18,8 @@ import com.example.edistynytmobiili.model.EditRentalItemState
 import com.example.edistynytmobiili.model.RentalItem
 import kotlinx.coroutines.launch
 
-class EditRentalItemViewModel(savedStateHandle: SavedStateHandle) : ViewModel() {
+class EditRentalItemViewModel(
+    savedStateHandle: SavedStateHandle) : ViewModel() {
 
     private val _editRentalItemState = mutableStateOf(EditRentalItemState())
     val editRentalItemState: State<EditRentalItemState> = _editRentalItemState
@@ -42,20 +48,36 @@ class EditRentalItemViewModel(savedStateHandle: SavedStateHandle) : ViewModel() 
     fun editRentalItem() {
         viewModelScope.launch {
             try {
+                clearError()
                 _editRentalItemState.value = _editRentalItemState.value.copy(loading = true)
-                val response =
-                    rentalServices.editItem(_itemId, EditRentalItemReq(name = _editRentalItemState.value.item.name))
-                _editRentalItemState.value = _editRentalItemState.value.copy(categoryId = response.category.id, done = true)
+                if(checkAccess()) {
+                    val response =
+                        rentalServices.editItem(_itemId, EditRentalItemReq(name = _editRentalItemState.value.item.name))
+                    _editRentalItemState.value = _editRentalItemState.value.copy(categoryId = response.category.id, done = true)
+                }
+                else throw Exception("Access denied")
             } catch(e: Exception) {
-                _editRentalItemState.value = _editRentalItemState.value.copy(errorMsg = e.message, isError = true)
+                _editRentalItemState.value = _editRentalItemState.value.copy(errorMsg = e.message)
             } finally {
                 _editRentalItemState.value = _editRentalItemState.value.copy(loading = false)
             }
         }
     }
-    fun clearError() {
-        _editRentalItemState.value = _editRentalItemState.value.copy(errorMsg = null, isError = false)
+
+
+    private suspend fun checkAccess() : Boolean {
+        val accessToken = db.accountDao().getToken()
+        accessToken?.let {
+            authService.getAccount("Bearer $it")
+            return true
+        }
+        return false
     }
+
+    private fun clearError() {
+        _editRentalItemState.value = _editRentalItemState.value.copy(errorMsg = null)
+    }
+
 
 
 }

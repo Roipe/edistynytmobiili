@@ -1,5 +1,7 @@
 package com.example.edistynytmobiili.api
 
+import com.example.edistynytmobiili.AccountDatabase
+import com.example.edistynytmobiili.DbProvider
 import com.example.edistynytmobiili.model.AuthReq
 import com.example.edistynytmobiili.model.AuthRes
 import com.example.edistynytmobiili.model.RegReq
@@ -31,6 +33,7 @@ interface AuthApi {
 
     @GET("auth/account")
     suspend fun getAccount(@Header("Authorization") bearerToken: String)
+
 
 
 }

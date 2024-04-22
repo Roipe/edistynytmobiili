@@ -65,6 +65,7 @@ class LoginViewModel(private val db: AccountDatabase = DbProvider.db) : ViewMode
                 setLoginStatus(true)
 
             } catch (e: Exception) {
+                Log.d("erroriaaaa", "${e.message}")
                 _loginState.value = _loginState.value.copy(errorMsg = e.message)
             } finally {
                 _loginState.value = _loginState.value.copy(loading = false)
@@ -80,7 +81,6 @@ class LoginViewModel(private val db: AccountDatabase = DbProvider.db) : ViewMode
                 val accessToken = db.accountDao().getToken()
                 accessToken?.let {
                 authService.getAccount("Bearer $it")
-
                     setLoginStatus(true)
                 }
             } catch (e: Exception) {

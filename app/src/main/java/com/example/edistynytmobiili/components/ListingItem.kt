@@ -21,10 +21,12 @@ import androidx.compose.foundation.layout.Column
 
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -34,16 +36,22 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.shape.CircleShape
 
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.AddCircle
+import androidx.compose.material.icons.filled.MoreHoriz
 
 import androidx.compose.material.icons.rounded.CheckCircle
 import androidx.compose.material3.Button
+import androidx.compose.material3.FilledIconButton
 
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonColors
+import androidx.compose.material3.IconButtonDefaults
 
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -55,6 +63,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.input.pointer.pointerInput
@@ -70,16 +79,17 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 @Composable
-fun ListingItem(name: String, onOpen: () -> Unit) {
+fun ListingItem(
+    name: String,
+    onOpen: () -> Unit,
+    modifier: Modifier = Modifier) {
 
-    var mainModifiers = Modifier
+    Column(modifier = modifier
         .clip(RoundedCornerShape(14.dp))
         .background(MaterialTheme.colorScheme.background)
         .wrapContentWidth()
         .padding(8.dp)
-        .clickable(onClick = {onOpen()})
-
-    Column(modifier = mainModifiers,
+        .clickable(onClick = { onOpen() }),
         horizontalAlignment = Alignment.CenterHorizontally) {
         BiggerRandomImage()
         Column(
@@ -107,8 +117,10 @@ fun SelectableListingItem(
     name: String,
     onSelect : () -> Unit,
     onOpen : () -> Unit,
+    modifier: Modifier = Modifier,
     isSelected : Boolean = false,
-    isAvailable : Boolean = true
+    isAvailable : Boolean = true,
+
 ) {
     //var isSelected by remember { mutableStateOf(false) }
     val transition = updateTransition(isSelected, label = "selectionTransition")
@@ -121,7 +133,13 @@ fun SelectableListingItem(
     val haptics = LocalHapticFeedback.current
     val roundedCornerShape = RoundedCornerShape(16.dp)
 
-    var mainModifiers = Modifier
+
+
+
+
+    Box {
+
+    Row(modifier = modifier
         .clip(roundedCornerShape)
         .background(MaterialTheme.colorScheme.background)
         .combinedClickable(
@@ -138,19 +156,31 @@ fun SelectableListingItem(
             enabled = isAvailable
         )
         .border(borderDp, borderColor, roundedCornerShape)
-        .fillMaxSize()
-        .padding(8.dp)
+        .padding(8.dp)) {
 
+        RandomImage()
 
-
-    Box {
-
-
-    Row(modifier = mainModifiers) {
-
-        Box (contentAlignment = Alignment.Center) {
-
+        /*
+        Box (contentAlignment = Alignment.TopStart) {
             RandomImage()
+            IconButton(
+                onClick = { onSelect() },
+                modifier = Modifier
+                    .offset(x = (-5).dp, y = -10.dp)
+            ) {
+                Icon(
+                    imageVector = Icons.Filled.MoreHoriz, contentDescription = "Action options",
+                    modifier = Modifier
+                        .clip(shape = CircleShape)
+                        .background(MaterialTheme.colorScheme.secondaryContainer)
+                )
+
+            }
+        }
+
+         */
+
+
             /*
             androidx.compose.animation.AnimatedVisibility(
                 visible = isSelected,
@@ -167,7 +197,6 @@ fun SelectableListingItem(
              */
 
 
-        }
         Spacer(modifier = Modifier.width(16.dp))
         Column(
             modifier = Modifier.fillMaxWidth(),
@@ -178,13 +207,14 @@ fun SelectableListingItem(
                 text = name,
                 style = MaterialTheme.typography.headlineSmall,
                 maxLines = 1,
-                overflow = TextOverflow.Ellipsis
+                overflow = TextOverflow.Ellipsis,
+                modifier = Modifier.padding(end = 37.dp)
             )
             if (!isAvailable) Text( modifier = Modifier
-                    //.fillMaxWidth()
-                    //.background(MaterialTheme.colorScheme.scrim.copy(alpha = 0.7f))
-                    .background(MaterialTheme.colorScheme.secondary)
-                    .padding(2.dp),
+                //.fillMaxWidth()
+                //.background(MaterialTheme.colorScheme.scrim.copy(alpha = 0.7f))
+                .background(MaterialTheme.colorScheme.secondary)
+                .padding(2.dp),
                 color = MaterialTheme.colorScheme.onSecondary,
                 fontWeight = FontWeight.Medium,
                 text = "Unavailable")
@@ -197,6 +227,18 @@ fun SelectableListingItem(
                 .clip(roundedCornerShape)
                 .background(MaterialTheme.colorScheme.scrim.copy(alpha = 0.30f))){
         }
+        Row (horizontalArrangement = Arrangement.End,
+            modifier = Modifier.fillMaxWidth()) {
+            FilledIconButton(onClick = { onSelect() },
+                colors = IconButtonDefaults.filledIconButtonColors(
+                    containerColor = MaterialTheme.colorScheme.secondaryContainer)
+            ){
+                Icon(imageVector = Icons.Filled.MoreHoriz,
+                    contentDescription = "Action options",
+                    tint = MaterialTheme.colorScheme.onSecondaryContainer)
+            }
+        }
+
 
     }
 
@@ -206,17 +248,14 @@ fun SelectableListingItem(
 fun AddNewListing(
     name: String,
     onClick : () -> Unit,
+    modifier: Modifier = Modifier
 ) {
-    var mainModifiers = Modifier
-        .clip(RoundedCornerShape(16.dp))
+    Row(modifier = modifier.clip(RoundedCornerShape(16.dp))
         .background(MaterialTheme.colorScheme.background)
         .clickable(onClick = { onClick() })
         .border(1.dp, MaterialTheme.colorScheme.outline, RoundedCornerShape(16.dp))
         .fillMaxSize()
-        .padding(8.dp)
-
-
-    Row(modifier = mainModifiers,
+        .padding(8.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceEvenly) {
 
@@ -269,25 +308,25 @@ fun AddNewListing(
 }
 
 @Composable
-fun RandomImage() {
+fun RandomImage(modifier: Modifier = Modifier) {
     AsyncImage(
         model = ImageRequest.Builder(LocalContext.current)
             .data("https://picsum.photos/300")
             .build(),
         contentDescription = "Random image",
-        modifier = Modifier.clip(RoundedCornerShape(16.dp))
+        modifier = modifier.clip(RoundedCornerShape(16.dp))
     )
 }
 
 @Composable
-fun BiggerRandomImage() {
+fun BiggerRandomImage(modifier: Modifier = Modifier) {
     AsyncImage(
         model = ImageRequest.Builder(LocalContext.current)
             .data("https://picsum.photos/300")
             .build(),
         contentDescription = "Random image",
         contentScale = ContentScale.Fit,
-        modifier = Modifier
+        modifier = modifier
             .clip(RoundedCornerShape(16.dp))
             .fillMaxWidth()
 
