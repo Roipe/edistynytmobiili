@@ -5,8 +5,9 @@ import com.google.gson.annotations.SerializedName
 data class CategoriesState(
     val list: List<CategoryItem> = emptyList(),
     val loading: Boolean = false,
-    val errorMsg: String? = null,
-    val selectedItem: CategoryItem = CategoryItem()
+    val selectedItem: CategoryItem = CategoryItem(),
+    val errorMsg: String? = null
+
 )
 data class CategoryState(
     val item: CategoryItem = CategoryItem(),

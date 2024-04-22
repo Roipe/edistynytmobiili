@@ -41,6 +41,7 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.AddCircle
 
 import androidx.compose.material.icons.rounded.CheckCircle
+import androidx.compose.material3.Button
 
 import androidx.compose.material3.Icon
 
@@ -63,6 +64,7 @@ import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.onClick
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
@@ -72,19 +74,10 @@ fun ListingItem(name: String, onOpen: () -> Unit) {
 
     var mainModifiers = Modifier
         .clip(RoundedCornerShape(14.dp))
-        //.clickable(onClick = {onOpen()})
-        .pointerInput(onOpen()) { detectTapGestures { onOpen() } }
-        // handle accessibility services
-        .semantics(mergeDescendants = true) {
-            contentDescription = "Open"
-            onClick {
-                onOpen()
-                true
-            }
-        }
         .background(MaterialTheme.colorScheme.background)
         .wrapContentWidth()
         .padding(8.dp)
+        .clickable(onClick = {onOpen()})
 
     Column(modifier = mainModifiers,
         horizontalAlignment = Alignment.CenterHorizontally) {
@@ -114,9 +107,9 @@ fun SelectableListingItem(
     name: String,
     onSelect : () -> Unit,
     onOpen : () -> Unit,
-    isSelected : Boolean = false
+    isSelected : Boolean = false,
+    isAvailable : Boolean = true
 ) {
-
     //var isSelected by remember { mutableStateOf(false) }
     val transition = updateTransition(isSelected, label = "selectionTransition")
     val borderDp by transition.animateDp(label = "borderSizeTransition") {
@@ -126,34 +119,36 @@ fun SelectableListingItem(
         if (it) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.background
     }
     val haptics = LocalHapticFeedback.current
+    val roundedCornerShape = RoundedCornerShape(16.dp)
+
     var mainModifiers = Modifier
-        .clip(RoundedCornerShape(16.dp))
+        .clip(roundedCornerShape)
         .background(MaterialTheme.colorScheme.background)
         .combinedClickable(
             onClick = {
-                //isSelected = false
                 if (!isSelected) onOpen() else onSelect()
             },
             onLongClick = {
                 onSelect()
                 haptics.performHapticFeedback(HapticFeedbackType.LongPress)
-                //isSelected = true
             },
             onDoubleClick = {
                 onSelect()
-                //isSelected = true
-            }
+            },
+            enabled = isAvailable
         )
-        .border(borderDp, borderColor, RoundedCornerShape(16.dp))
+        .border(borderDp, borderColor, roundedCornerShape)
         .fillMaxSize()
         .padding(8.dp)
 
 
 
+    Box {
+
 
     Row(modifier = mainModifiers) {
 
-        Box {
+        Box (contentAlignment = Alignment.Center) {
 
             RandomImage()
             /*
@@ -175,27 +170,40 @@ fun SelectableListingItem(
         }
         Spacer(modifier = Modifier.width(16.dp))
         Column(
-            modifier = Modifier
-                .fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth(),
             verticalArrangement = Arrangement.SpaceBetween,
             horizontalAlignment = Alignment.Start
         ) {
-
             Text(
                 text = name,
                 style = MaterialTheme.typography.headlineSmall,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
             )
-
+            if (!isAvailable) Text( modifier = Modifier
+                    //.fillMaxWidth()
+                    //.background(MaterialTheme.colorScheme.scrim.copy(alpha = 0.7f))
+                    .background(MaterialTheme.colorScheme.secondary)
+                    .padding(2.dp),
+                color = MaterialTheme.colorScheme.onSecondary,
+                fontWeight = FontWeight.Medium,
+                text = "Unavailable")
         }
 
+    }
+        if (!isAvailable) Box (
+            modifier = Modifier
+                .matchParentSize()
+                .clip(roundedCornerShape)
+                .background(MaterialTheme.colorScheme.scrim.copy(alpha = 0.30f))){
+        }
 
     }
 
+
 }
 @Composable
-fun AddButtonListing(
+fun AddNewListing(
     name: String,
     onClick : () -> Unit,
 ) {

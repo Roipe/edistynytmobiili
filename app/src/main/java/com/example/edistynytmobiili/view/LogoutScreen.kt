@@ -14,12 +14,14 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Login
 
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -55,7 +57,7 @@ fun LogoutConfirmationDialog(onConfirm : () -> Unit, onCancel: () -> Unit) {
 
 }
 @Composable
-fun LogoutScreen(goToLogin : () -> Unit, exitApp : () -> Unit) {
+fun LogoutScreen(goToLogin : () -> Unit) {
     val vm: LogoutViewModel = viewModel()
     val context = LocalContext.current
     LaunchedEffect(key1 = vm.logoutState.value.errorMsg) {
@@ -87,7 +89,7 @@ fun LogoutScreen(goToLogin : () -> Unit, exitApp : () -> Unit) {
              */
             !vm.logoutState.value.status -> vm.logout()
             else -> Column(
-                modifier = Modifier.fillMaxHeight(),
+                modifier = Modifier.fillMaxSize(),
                 verticalArrangement = Arrangement.SpaceEvenly,
                 horizontalAlignment = Alignment.CenterHorizontally
 
@@ -95,21 +97,13 @@ fun LogoutScreen(goToLogin : () -> Unit, exitApp : () -> Unit) {
                 Text("Logged out successfully!", fontSize = 24.sp)
                 Text("\uD83D\uDC4D",fontSize = 64.sp)
                 Spacer(modifier = Modifier.height(10.dp))
-                Row (
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceEvenly,){
+
                     Button(onClick = { goToLogin()}) {
-                        Icon(Icons.Filled.ArrowBack, contentDescription = "Back to login",
+                        Icon(Icons.Filled.Login, contentDescription = "Back to login",
                             modifier = Modifier.padding(end = 10.dp))
-                        Text("Back to login")
+                        Text("Log back in")
                     }
-                    Button(onClick = { exitApp()},
-                        colors = ButtonDefaults.buttonColors(containerColor = Color.Red)) {
-                        Icon(Icons.Filled.Close, contentDescription = "Exit app",
-                            modifier = Modifier.padding(end = 10.dp))
-                        Text("Exit app")
-                    }
-                }
+
 
             }
         }

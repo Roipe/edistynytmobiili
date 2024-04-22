@@ -34,7 +34,7 @@ class CategoriesViewModel : ViewModel() {
         if (newItem == _categoriesState.value.selectedItem) newItem = CategoryItem()
         _categoriesState.value = _categoriesState.value.copy(selectedItem = newItem)
     }
-    fun selectedItem (id: Int) : Boolean {
+    fun isSelectedItem (id: Int) : Boolean {
         return _categoriesState.value.selectedItem.id == id
     }
 

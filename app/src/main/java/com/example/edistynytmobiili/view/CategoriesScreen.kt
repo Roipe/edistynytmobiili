@@ -1,6 +1,5 @@
 package com.example.edistynytmobiili.view
 
-import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -49,7 +48,7 @@ import androidx.compose.ui.unit.dp
 
 import androidx.lifecycle.viewmodel.compose.viewModel
 
-import com.example.edistynytmobiili.components.AddButtonListing
+import com.example.edistynytmobiili.components.AddNewListing
 import com.example.edistynytmobiili.components.CategoryOptionsSheet
 
 import com.example.edistynytmobiili.components.SelectableListingItem
@@ -89,16 +88,16 @@ fun ConfirmCategoryDelete(onConfirm : () -> Unit, onCancel: () -> Unit, clearErr
 @Composable
 fun CategoriesScreen(
     onMenuClick: () -> Unit,
-    goToEditCategory : (Int) -> Unit,
-    goToAddCategory : () -> Unit
+    goToEditCategory: (Int) -> Unit,
+    goToAddCategory: () -> Unit,
+    goToRentalItems: (Int) -> Unit,
 ) {
     val vm: CategoriesViewModel = viewModel()
 
     //Scaffoldilla hallitaan erilaisia UI:n osia, kuten app bareja ja floating action buttoneita
     Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text("Categories")},
+        topBar = { TopAppBar(
+            title = { Text("Categories")},
                 //Yläpalkin ikonia painettaessa launchataan coroutine, joka avaa tai sulkee drawerin sen tilasta riippuen.
                 navigationIcon = {
                     IconButton(onClick = { onMenuClick() }) {
@@ -112,7 +111,7 @@ fun CategoriesScreen(
                 }
 
             )
-        },
+        }
         //floatingActionButtonPosition = FabPosition.Center,
         //floatingActionButton = {
         //    FloatingActionButton(onClick = { vm.toggleAddDialog(true) }) {
@@ -157,26 +156,25 @@ fun CategoriesScreen(
                     contentPadding = PaddingValues(10.dp),
                     modifier = Modifier
                         .clip(RoundedCornerShape(16.dp))
-                        .background(MaterialTheme.colorScheme.primaryContainer)
+                        .background(MaterialTheme.colorScheme.surfaceVariant)
                         .wrapContentSize()
 
 
                 ) {
                     items(vm.categoriesState.value.list) {item ->
-                        Log.d("cat 1", "id: ${item.id} name: ${item.name}")
                         Spacer(modifier = Modifier.height(5.dp))
                         SelectableListingItem(
                             name = item.name,
                             onSelect = {vm.setSelectedItem(item.name, item.id)},
-                            onOpen = {},
-                            isSelected = vm.selectedItem(item.id)
+                            onOpen = { goToRentalItems(item.id) },
+                            isSelected = vm.isSelectedItem(item.id)
                         )
                         Spacer(modifier = Modifier.height(5.dp))
 
                     }
                     item {
                         Spacer(modifier = Modifier.height(5.dp))
-                        AddButtonListing(name = "Add a new category", onClick = { goToAddCategory() })
+                        AddNewListing(name = "Add a new category", onClick = { goToAddCategory() })
                         Spacer(modifier = Modifier.height(5.dp))
                     }
 
@@ -187,7 +185,7 @@ fun CategoriesScreen(
 
                         CategoryOptionsSheet(
                             name = vm.categoriesState.value.selectedItem.name,
-                            onOpen = { /*TODO*/ },
+                            onOpen = { goToRentalItems(vm.categoriesState.value.selectedItem.id) },
                             onEdit = { goToEditCategory(vm.categoriesState.value.selectedItem.id) },
                             onDelete = { vm.setCategoryForRemoval(vm.categoriesState.value.selectedItem.id) },
                             onClose = { vm.setSelectedItem() }

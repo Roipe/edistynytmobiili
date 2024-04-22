@@ -6,6 +6,7 @@ import com.example.edistynytmobiili.model.CategoriesResponse
 import com.example.edistynytmobiili.model.CategoryItem
 import com.example.edistynytmobiili.model.CategoryResponse
 import com.example.edistynytmobiili.model.EditCategoryReq
+import com.example.edistynytmobiili.model.RentalItemsResponse
 import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
@@ -41,6 +42,9 @@ interface CategoriesApi {
     suspend fun editCategory(@Path("id") id: Int, @Body saveCategoryReq: EditCategoryReq) : CategoryResponse
     @DELETE("category/{id}")
     suspend fun removeCategory(@Path("id") id: Int)
+
+    @GET("category/{id}/items")
+    suspend fun getItems(@Path("id") id: Int): RentalItemsResponse
 
 
 }
