@@ -6,12 +6,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.edistynytmobiili.api.categoriesService
-import com.example.edistynytmobiili.model.AddCategoryReq
-import com.example.edistynytmobiili.model.AddCategoryState
 import com.example.edistynytmobiili.model.CategoriesState
 import com.example.edistynytmobiili.model.CategoryItem
 import com.example.edistynytmobiili.model.DeleteCategoryState
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class CategoriesViewModel : ViewModel() {
@@ -22,8 +19,6 @@ class CategoriesViewModel : ViewModel() {
     private val _deleteCategoryState = mutableStateOf(DeleteCategoryState())
     val deleteCategoryState: State<DeleteCategoryState> = _deleteCategoryState
 
-
-    //Esimerkiksi rajapintakutsut tehdään init:n sisällä. Tämän sisältämä koodi suoritetaan näytön renderauksen yhteydessä.
     init {
         getCategories()
     }
@@ -37,16 +32,13 @@ class CategoriesViewModel : ViewModel() {
     fun isSelectedItem (id: Int) : Boolean {
         return _categoriesState.value.selectedItem.id == id
     }
-
-    fun setCategoryForRemoval(categoryId: Int = 0) {
-        _deleteCategoryState.value = _deleteCategoryState.value.copy(id = categoryId)
+    fun setCategoryForRemoval(id: Int = 0) {
+        _deleteCategoryState.value = _deleteCategoryState.value.copy(id = id)
     }
-
 
     fun clearDeletionError() {
         _deleteCategoryState.value = _deleteCategoryState.value.copy(errorMsg = null)
     }
-
     fun deleteCategoryById() {
         viewModelScope.launch {
             try {
@@ -57,10 +49,9 @@ class CategoriesViewModel : ViewModel() {
                     //Kun tämä ehto on tosi, lisätään käsiteltävä itemi uuteen listaan
                     _deleteCategoryState.value.id != it.id
                 }
-                //Asetetaan stateen suodatettu lista, josta on poistettu parametrin id:n mukainen kategoria.
+                //Kopioidaan stateen suodatettu lista, josta on poistettu parametrin id:n mukainen kategoria.
                 _categoriesState.value = _categoriesState.value.copy(list = listOfCategories)
-                //Nollataan deleteStatesta kategoria-id, koska sitä koskevat toimenpiteet on suoritettu
-                //verifyCategoryRemoval(0)
+                //Päivitetään näkymä
                 refresh()
 
             } catch (e: Exception) {
@@ -69,14 +60,11 @@ class CategoriesViewModel : ViewModel() {
                 _categoriesState.value = _categoriesState.value.copy(loading = false)
             }
         }
-
     }
     private fun refresh() {
         getCategories()
         setCategoryForRemoval()
         setSelectedItem()
-
-
     }
     private fun getCategories() {
         viewModelScope.launch {

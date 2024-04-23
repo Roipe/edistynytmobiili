@@ -1,7 +1,6 @@
 package com.example.edistynytmobiili
 
 import android.content.Context
-import android.util.Log
 import androidx.room.Room
 
 object DbProvider {

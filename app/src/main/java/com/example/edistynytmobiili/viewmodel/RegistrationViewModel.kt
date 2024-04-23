@@ -15,7 +15,6 @@ class RegistrationViewModel : ViewModel() {
     val registrationState: State<RegistrationState> = _registrationState
 
     fun setUsername(newUsername: String) {
-        //.copylla kopioidaan kaikki tiedot statesta, mutta usernamea muutetaan
         _registrationState.value = _registrationState.value.copy(username =  newUsername)
     }
     fun setPassword(newPassword : String) {
@@ -57,13 +56,12 @@ class RegistrationViewModel : ViewModel() {
 
                     */
                     //Tarkistetaan siis onko käyttäjänimi jo olemassa:
-                    if (it.contains("409", ignoreCase = true)) {
+                    if (it.contains("409")) {
                         _registrationState.value = _registrationState.value.copy(isUsernameError = true)
                         message = "Username already in use"
                     }
                 }
                 _registrationState.value = _registrationState.value.copy(errorMsg = message)
-                //toggleError(true)
             } finally {
                 _registrationState.value = _registrationState.value.copy(loading = false)
 
@@ -74,14 +72,5 @@ class RegistrationViewModel : ViewModel() {
         _registrationState.value = _registrationState.value.copy(errorMsg = null, isPasswordError = false, isUsernameError = false)
     }
 
-    /*
-    fun toggleError(status: Boolean) {
-        _registrationState.value = _registrationState.value.copy(showError = status)
-    }
-       fun clearError() {
-        _registrationState.value = _registrationState.value.copy(errorMsg = null)
-    }
-
-     */
 
 }

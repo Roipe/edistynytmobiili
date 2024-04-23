@@ -1,6 +1,5 @@
 package com.example.edistynytmobiili.view
 
-import android.util.Log
 import com.example.edistynytmobiili.viewmodel.EditRentalItemViewModel
 import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
@@ -43,21 +42,13 @@ fun EditRentalItemScreen(onDone: (Int) -> Unit, onCancel: () -> Unit) {
             onDone(vm.editRentalItemState.value.categoryId)
         }
     }
-    /*
-    LaunchedEffect(key1 = vm.editRentalItemState.value.isError) {
-        if (vm.editRentalItemState.value.isError) {
-            Toast.makeText(context, vm.editRentalItemState.value.errorMsg, Toast.LENGTH_LONG).show()
-        }
-    }
 
-     */
     LaunchedEffect(key1 = vm.editRentalItemState.value.errorMsg) {
         vm.editRentalItemState.value.errorMsg?.let {
             Toast.makeText(context, vm.editRentalItemState.value.errorMsg, Toast.LENGTH_LONG).show()
         }
 
     }
-
     Scaffold( topBar = {
         TopAppBar(
         title = { Text("Edit item")},
@@ -78,45 +69,28 @@ fun EditRentalItemScreen(onDone: (Int) -> Unit, onCancel: () -> Unit) {
                 )
                 else -> {
                     Column(
-                        modifier = Modifier
-                            .fillMaxHeight(),
+                        modifier = Modifier.fillMaxHeight(),
                         horizontalAlignment = Alignment.CenterHorizontally,
-                    )
-                    {
-                        Box (
-                            modifier = Modifier.fillMaxWidth(0.7f)
-                        ){
+                    ) {
+                        Box (modifier = Modifier.fillMaxWidth(0.7f)) {
                             ListingItem(name = vm.editRentalItemState.value.item.name, onOpen = {})
                         }
                         NameTextField(name = vm.editRentalItemState.value.item.name,
-                            onNameChange = { newName ->
-                                vm.setName(newName)
-                            },
+                            onNameChange = { newName -> vm.setName(newName) },
                             textFieldLabel = "Category name",
                             isError = !vm.editRentalItemState.value.errorMsg.isNullOrBlank(),
                             errorMsg = vm.editRentalItemState.value.errorMsg
                         )
                         Spacer(Modifier.height(10.dp))
-                        Row (
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.SpaceEvenly){
-                            Button(
-                                onClick = {
-                                    onCancel()
-                                }
-                            ) {
-                                Text("Cancel")
-                            }
-                            Button(
-                                enabled = vm.editRentalItemState.value.item.name != "",
-                                onClick = {
-                                    vm.editRentalItem()
-                                }
-                            ) {
+                        Row (modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceEvenly) {
+                            Button(onClick = { onCancel() }
+                            ) { Text("Cancel") }
+                            Button(enabled = vm.editRentalItemState.value.item.name != "",
+                                onClick = { vm.editItem() }) {
                                 Text("Save")
                             }
                         }
-
                     }
                 }
             }

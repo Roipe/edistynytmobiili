@@ -1,22 +1,17 @@
 package com.example.edistynytmobiili.viewmodel
 
-import android.accounts.Account
 import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.edistynytmobiili.AccountDatabase
 import com.example.edistynytmobiili.AccountEntity
 import com.example.edistynytmobiili.DbProvider
-import com.example.edistynytmobiili.MainActivity
 import com.example.edistynytmobiili.api.authService
 import com.example.edistynytmobiili.model.AuthReq
 import com.example.edistynytmobiili.model.LoginState
 
-
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class LoginViewModel(private val db: AccountDatabase = DbProvider.db) : ViewModel() {
@@ -59,9 +54,7 @@ class LoginViewModel(private val db: AccountDatabase = DbProvider.db) : ViewMode
                     )
                 )
                 //Tallennetaan tietokantaan access token
-                db.accountDao().addToken(
-                    AccountEntity(accessToken = res.accessToken)
-                )
+                db.accountDao().addToken(AccountEntity(accessToken = res.accessToken))
                 setLoginStatus(true)
 
             } catch (e: Exception) {
@@ -91,14 +84,5 @@ class LoginViewModel(private val db: AccountDatabase = DbProvider.db) : ViewMode
         }
 
     }
-
-
-
-
-    /*
-    fun clearError() {
-        _loginState.value = _loginState.value.copy(errorMsg = null)
-    }
-     */
 
 }

@@ -1,11 +1,11 @@
 package com.example.edistynytmobiili.view
 
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -16,6 +16,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -24,129 +25,150 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.edistynytmobiili.components.AddNewListing
 import com.example.edistynytmobiili.components.ActionOptionsSheet
-import com.example.edistynytmobiili.components.SelectableListingItem
+import com.example.edistynytmobiili.components.ExpandableListingItem
 import com.example.edistynytmobiili.viewmodel.RentalItemsViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RentalItemsScreen (
-    goToRentItem: () -> Unit,
+    onRentComplete: (Int) -> Unit,
     goToAddItem:(Int) -> Unit,
     goToEditItem: (Int) -> Unit,
     onBack: () -> Unit) {
 
     val vm: RentalItemsViewModel = viewModel()
-
-    Scaffold(
-        topBar = { TopAppBar(
-            title = { Text(vm.rentalItemsState.value.categoryName) },
-                //Yläpalkin ikonia painettaessa launchataan coroutine, joka avaa tai sulkee drawerin sen tilasta riippuen.
-                navigationIcon = {
-                    IconButton(onClick = {
-                        onBack()
-                    }) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = "Back")
-                    }
-                },
-                actions = {
-                IconButton(onClick = { goToAddItem(vm.categoryId)}) {
-                    Icon(imageVector = Icons.Filled.Add, contentDescription = "Add Category")
-                }
-            }
-
-            )
+    val context = LocalContext.current
+    LaunchedEffect(key1 = vm.rentalItemsState.value.errorMsg) {
+        vm.rentalItemsState.value.errorMsg?.let {
+            Toast.makeText(context, it, Toast.LENGTH_LONG).show()
+            vm.clearError()
         }
+    }
+    LaunchedEffect(key1 = vm.rentalState.value.rentItemId) {
+        if (vm.rentalState.value.rentItemId > 0) {
+            onRentComplete(vm.rentalState.value.rentItemId)
+        }
+    }
+    Scaffold(
+        topBar = { TopAppBar(title = { Text(vm.rentalItemsState.value.categoryName) },
+            navigationIcon = { IconButton(onClick = { onBack() }) {
+                Icon(Icons.Default.ArrowBack, contentDescription = "Back")
+            } }, actions = {
+                    IconButton(onClick = { goToAddItem(vm.categoryId)}) {
+                        Icon(imageVector = Icons.Filled.Add, contentDescription = "Add Category")
+                    }
+                }
+        ) }
     ){
         Box(modifier = Modifier
             .fillMaxSize()
             .padding(it)) {
-
             when {
                 vm.rentalItemsState.value.loading -> CircularProgressIndicator(
                     modifier = Modifier.align(Alignment.Center)
                 )
-                //Erroreiden tapauksessa printataan näytölle error message.
-                vm.rentalItemsState.value.errorMsg != null ->
-                    Text("Error: ${vm.rentalItemsState.value.errorMsg}")
-                /*
-                vm.deleteRentalState.value.id > 0 -> ConfirmCategoryDelete(
-                    onConfirm = { vm.deleteCategoryById() },
-                    onCancel = { vm.verifyCategoryRemoval(0) },
-                    clearError = { vm.clearDeletionError() },
-                    errorString = vm.deleteCategoryState.value.errorMsg
-                )
-                vm.categoriesState.value.showAddDialog -> AddCategoryDialog(
-                    onConfirm = { vm.addCategory() },
-                    onCancel = { vm.toggleAddDialog(false) },
-                    name = vm.addCategoryState.value.name,
-                    setName = { newName -> vm.setName(newName)},
-                    clearError = { vm.clearAdditionError() },
-                    errorString = vm.addCategoryState.value.errorMsg,
 
-                    )
+                else ->
+                    LazyColumn(
+                        contentPadding = PaddingValues(10.dp),
+                        modifier = Modifier
+                            .clip(RoundedCornerShape(16.dp))
+                            .background(MaterialTheme.colorScheme.surfaceVariant)
+                            .wrapContentSize()
+                    ) {
+                        items(vm.rentalItemsState.value.list) {item ->
+                            Spacer(modifier = Modifier.height(5.dp))
+                            Box(contentAlignment = Alignment.BottomEnd) {
 
-                 */
-                }
-                //LazyColumn piirtää vain näytöllä näkyvät asiat, eikä siis tuhlaa resursseja ylimääräisten näytön ulkopuolisten asioiden piirtämiseen.
-                LazyColumn(
-                    contentPadding = PaddingValues(10.dp),
-                    modifier = Modifier
-                        .clip(RoundedCornerShape(16.dp))
-                        .background(MaterialTheme.colorScheme.surfaceVariant)
-                        .wrapContentSize()
-                ) {
-                    items(vm.rentalItemsState.value.list) {item ->
-                        Spacer(modifier = Modifier.height(5.dp))
-                        Box(contentAlignment = Alignment.BottomEnd) {
-                            SelectableListingItem(
-                                name = item.name,
-                                onSelect = {vm.setSelectedItem(item.name, item.id)},
-                                onOpen = {},
-                                isSelected = vm.isSelectedItem(item.id),
-                            )
-                            Button(
-                                modifier = Modifier.padding(bottom = 5.dp, end = 10.dp),
-                                onClick = {  },
-                                shape = RoundedCornerShape(5.dp)) {
-                                Text("Rent")
+                                ExpandableListingItem(
+                                    name = item.name,
+                                    onOpen = { vm.setOpenItem(item) },
+                                    onClose = { vm.setOpenItem() },
+                                    optionMenu = { vm.setSelectedItem(item.name, item.id) },
+                                    isExpanded = vm.isOpenItem(item.id),
+                                    isAvailable = item.isFree)
+                                Button(
+                                    modifier = Modifier.padding(bottom = 5.dp, end = 10.dp),
+                                    onClick = {vm.rentItem(item.id)},
+                                    shape = RoundedCornerShape(5.dp),
+                                    enabled = item.isFree) {
+                                    Text("Rent")
+                                }
                             }
+
+                            Spacer(modifier = Modifier.height(5.dp))
+
+                        }
+                        item {
+                            Spacer(modifier = Modifier.height(5.dp))
+                            AddNewListing(name = "Add a new item", onClick = { goToAddItem(vm.categoryId) })
+                            Spacer(modifier = Modifier.height(5.dp))
                         }
 
-                        Spacer(modifier = Modifier.height(5.dp))
-
                     }
-                    item {
-                        Spacer(modifier = Modifier.height(5.dp))
-                        AddNewListing(name = "Add a new item", onClick = { })
-                        Spacer(modifier = Modifier.height(5.dp))
-                    }
-
-                }
-            if (vm.rentalItemsState.value.selectedItem.name != "") {
+            }
+            if(vm.deleteRentalItemState.value.id > 0) ConfirmRentalItemDelete(
+                onConfirm = { vm.deleteItemById() },
+                onCancel = { vm.setItemForRemoval() },
+                clearError = { vm.clearDeletionError() },
+                name = vm.rentalState.value.selectedItem.name,
+                errorString = vm.deleteRentalItemState.value.errorMsg
+                )
+            if(vm.rentalState.value.selectedItem.name != "")
                 Row (){
                     ActionOptionsSheet(
-                        name = vm.rentalItemsState.value.selectedItem.name,
-                        onOpen = {  },
-                        onEdit = { goToEditItem(vm.rentalItemsState.value.selectedItem.id) },
-                        onDelete = {  },
+                        name = vm.rentalState.value.selectedItem.name,
+                        onOpen = {
+                            vm.setOpenItem(vm.rentalState.value.selectedItem)
+                            vm.setSelectedItem()
+                        },
+                        onEdit = { goToEditItem(vm.rentalState.value.selectedItem.id) },
+                        onDelete = { vm.setItemForRemoval(vm.rentalState.value.selectedItem.id) },
                         onClose = { vm.setSelectedItem() }
 
                     )
                 }
-
-            }
-
-
-
         }
     }
+}
+@Composable
+fun ConfirmRentalItemDelete(
+    onConfirm : () -> Unit, onCancel: () -> Unit,
+    clearError: () -> Unit, name: String,
+    errorString: String?){
+
+    val context = LocalContext.current
+    LaunchedEffect(key1 = errorString) {
+        errorString?.let {
+            Toast.makeText(context, it, Toast.LENGTH_LONG).show()
+            clearError()
+        }
+    }
+
+    AlertDialog(
+        title = {Text("Are you sure?")},
+        text = { Text("Are you sure you want to delete \"$name\"?") },
+        onDismissRequest = { /*TODO*/ },
+        confirmButton = {
+            TextButton(onClick = { onConfirm() }) {
+                Text("Delete")
+            }
+        }, dismissButton = {
+            TextButton(onClick = { onCancel() }) {
+                Text("Cancel")
+            }
+        }
+    )
 }

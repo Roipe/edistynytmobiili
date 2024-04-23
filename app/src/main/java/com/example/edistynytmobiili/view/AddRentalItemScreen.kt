@@ -30,7 +30,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.edistynytmobiili.components.NameTextField
-import com.example.edistynytmobiili.viewmodel.AddCategoryViewModel
 import com.example.edistynytmobiili.viewmodel.AddRentalItemViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -40,8 +39,8 @@ fun AddRentalItemScreen(onDone : (Int) -> Unit, onCancel : () -> Unit) {
     val context = LocalContext.current
     LaunchedEffect(key1 = vm.addRentalItemState.value.done) {
         if (vm.addRentalItemState.value.done) {
-            Log.d("id täs", "${ vm.addRentalItemState.value.categoryId }")
-            onDone(vm.addRentalItemState.value.categoryId)
+            Log.d("id täs", "${ vm.categoryId }")
+            onDone(vm.categoryId)
         }
     }
     LaunchedEffect(key1 = vm.addRentalItemState.value.errorMsg) {
@@ -49,13 +48,6 @@ fun AddRentalItemScreen(onDone : (Int) -> Unit, onCancel : () -> Unit) {
             Toast.makeText(context, vm.addRentalItemState.value.errorMsg, Toast.LENGTH_LONG).show()
         }
     }
-    /*
-    if (vm.addCategoryState.value.isError) {
-        Toast.makeText(LocalContext.current, vm.addCategoryState.value.errorMsg, Toast.LENGTH_LONG).show()
-    }
-
-     */
-
     Scaffold(
         topBar = {
             TopAppBar(title = { Text("Add a new item") },
@@ -71,8 +63,7 @@ fun AddRentalItemScreen(onDone : (Int) -> Unit, onCancel : () -> Unit) {
 
         }
     ){
-        Box(
-            modifier = Modifier
+        Box(modifier = Modifier
                 .fillMaxSize()
                 .padding(it),
             contentAlignment = Alignment.TopCenter
@@ -97,34 +88,25 @@ fun AddRentalItemScreen(onDone : (Int) -> Unit, onCancel : () -> Unit) {
                         }
 
                         NameTextField(name = vm.addRentalItemState.value.name,
-                            onNameChange = { newName ->
-                                vm.setName(newName)
-                            },
+                            onNameChange = { newName -> vm.setName(newName) },
                             textFieldLabel = "Item name",
                             isError = !vm.addRentalItemState.value.errorMsg.isNullOrBlank(),
                             errorMsg = vm.addRentalItemState.value.errorMsg
                         )
                         Row (modifier = Modifier.fillMaxWidth(),
                             horizontalArrangement = Arrangement.SpaceEvenly){
-                            Button(
-                                onClick = {
-                                    onCancel()
-                                }
-                            ) {
+                            Button(onClick = { onCancel() }) {
                                 Text("Cancel")
                             }
                             Button(
                                 enabled = vm.addRentalItemState.value.name != "",
-                                onClick = {
-                                    vm.addRentalItem()
-                                }
+                                onClick = { vm.addRentalItem() }
                             ) {
                                 Text("Save")
                             }
                         }
 
                     }
-
 
                 }
             }

@@ -7,20 +7,16 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AddPhotoAlternate
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -33,7 +29,6 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.edistynytmobiili.components.ListingItem
 import com.example.edistynytmobiili.components.NameTextField
-import com.example.edistynytmobiili.viewmodel.CategoryViewModel
 import com.example.edistynytmobiili.viewmodel.EditCategoryViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -52,15 +47,6 @@ fun EditCategoryScreen(goToCategories: () -> Unit, onCancel: () -> Unit) {
         }
 
     }
-    /*
-    LaunchedEffect(key1 = vm.editCategoryState.value.isError) {
-        if (vm.editCategoryState.value.isError) {
-            Toast.makeText(context, vm.editCategoryState.value.errorMsg, Toast.LENGTH_LONG).show()
-        }
-    }
-
-     */
-
     Scaffold( topBar = {
         TopAppBar(
             title = { Text("Edit category")},
@@ -73,7 +59,6 @@ fun EditCategoryScreen(goToCategories: () -> Unit, onCancel: () -> Unit) {
     } ){
         Box(
             modifier = Modifier
-                //.fillMaxSize()
                 .padding(it),
             contentAlignment = Alignment.TopCenter
         ) {
@@ -82,22 +67,16 @@ fun EditCategoryScreen(goToCategories: () -> Unit, onCancel: () -> Unit) {
                     modifier = Modifier.align(Alignment.Center)
                 )
                 else -> {
-                    Column(
-                        modifier = Modifier
-                            .fillMaxHeight(),
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        //verticalArrangement = Arrangement.SpaceEvenly,
+                    Column(modifier = Modifier
+                        .fillMaxHeight(),
+                        horizontalAlignment = Alignment.CenterHorizontally
                         )
                     {
-                        Box (
-                            modifier = Modifier.fillMaxWidth(0.7f)
-                        ){
+                        Box (modifier = Modifier.fillMaxWidth(0.7f)) {
                             ListingItem(name = vm.editCategoryState.value.item.name, onOpen = {})
                         }
                         NameTextField(name = vm.editCategoryState.value.item.name,
-                            onNameChange = { newName ->
-                                vm.setName(newName)
-                            },
+                            onNameChange = { newName -> vm.setName(newName) },
                             textFieldLabel = "Category name",
                             isError = !vm.editCategoryState.value.errorMsg.isNullOrBlank(),
                             errorMsg = vm.editCategoryState.value.errorMsg
@@ -105,12 +84,9 @@ fun EditCategoryScreen(goToCategories: () -> Unit, onCancel: () -> Unit) {
                         Spacer(Modifier.height(10.dp))
                         Row (
                             modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.SpaceEvenly){
-                            Button(
-                                onClick = {
-                                    onCancel()
-                                }
-                            ) {
+                            horizontalArrangement = Arrangement.SpaceEvenly
+                        ){
+                            Button(onClick = { onCancel() }) {
                                 Text("Cancel")
                             }
                             Button(
@@ -118,11 +94,8 @@ fun EditCategoryScreen(goToCategories: () -> Unit, onCancel: () -> Unit) {
                                 onClick = {
                                     vm.editCategory()
                                 }
-                            ) {
-                                Text("Save")
-                            }
+                            ) { Text("Save") }
                         }
-
                     }
                 }
             }

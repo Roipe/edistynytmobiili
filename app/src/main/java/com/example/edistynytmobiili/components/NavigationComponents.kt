@@ -6,15 +6,9 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
-
-import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.DrawerState
 
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.ModalDrawerSheet
 import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.NavigationDrawerItem
@@ -22,13 +16,8 @@ import androidx.compose.material3.NavigationDrawerItemDefaults
 
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
-import androidx.compose.material3.TopAppBar
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 
 import androidx.compose.ui.Modifier
@@ -54,6 +43,7 @@ import com.example.edistynytmobiili.view.LogoutConfirmationDialog
 import com.example.edistynytmobiili.view.LogoutScreen
 import com.example.edistynytmobiili.view.RegistrationScreen
 import com.example.edistynytmobiili.view.RentalItemsScreen
+import com.example.edistynytmobiili.view.RentalSummaryScreen
 import com.example.edistynytmobiili.viewmodel.NavigationViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -67,6 +57,7 @@ fun NavigationComponents(
 ) {
 
     val vm: NavigationViewModel = viewModel()
+    //toggle, jotta navigation drawer ei ole käytössä login-screenissä.
     if (vm.drawerEnabledState.value.status) {
         ModalNavigationDrawer(
             drawerState = drawerState,
@@ -79,7 +70,6 @@ fun NavigationComponents(
                     destinationRoute = currentBackStackEntry?.destination?.route?: ""
                 )
             },
-            //gesturesEnabled = drawerEnabled
         ) {
             NavigationHost(
                 drawerState = drawerState,
@@ -109,29 +99,28 @@ fun NavigationHost(
     NavHost(
         navController = navController,
         startDestination = Screen.Login.route) {
+
         composable(route = Screen.Login.route) {
-
             LoginScreen(
-                goToCategories = { toggleDrawerEnable()
+                goToCategories = {
+                    toggleDrawerEnable()
                     navController.navigate(Screen.Categories.route)
-
-                                 },
+                 },
                 goToRegistration = { navController.navigate(Screen.Registration.route)}
             )
         }
+
         composable(route = Screen.LogoutDialog.route) {
             LogoutConfirmationDialog(
                 onConfirm = { toggleDrawerEnable()
-                    navController.navigate(Screen.Logout.route)
-                {
+                    navController.navigate(Screen.Logout.route) {
                     popUpTo(Screen.Logout.route) { inclusive = true }
-                }
+                    }
                 },
-                onCancel = {
-                    navController.navigateUp()
-                }
+                onCancel = { navController.navigateUp() }
             )
         }
+
         composable(route = Screen.Logout.route) {
             BackHandler(onBack = { })
             LogoutScreen(
@@ -141,12 +130,12 @@ fun NavigationHost(
                     }
                 }
             )
-
         }
+
         composable(route = Screen.Registration.route) {
             RegistrationScreen(goToLogin = {navController.navigate(Screen.Login.route) {
                 popUpTo(Screen.Login.route) { inclusive = true }
-            } })
+            }})
         }
 
         composable(route = Screen.Categories.route) {
@@ -170,6 +159,7 @@ fun NavigationHost(
                 goToCategories = { navController.navigate(Screen.Categories.route) }
             )
         }
+
         composable(route = Screen.AddCategory.route) {
             AddCategoryScreen(
                 onDone = { navController.navigate(Screen.Categories.route) },
@@ -179,7 +169,7 @@ fun NavigationHost(
 
         composable(route = Screen.RentalItems.route) {
             RentalItemsScreen(
-                goToRentItem = {},
+                onRentComplete = {navController.navigate(Screen.RentalSummary.routeWithId(it)) },
                 goToAddItem = { navController.navigate(Screen.AddRentalItem.routeWithId(it)) },
                 goToEditItem = { navController.navigate(Screen.EditRentalItem.routeWithId(it)) },
                 onBack = { navController.navigate(Screen.Categories.route) },
@@ -199,8 +189,14 @@ fun NavigationHost(
             )
         }
 
-
-
+        composable(route = Screen.RentalSummary.route) {
+            RentalSummaryScreen(
+                goToCategories = { navController.navigate(Screen.Categories.route) },
+                onMenuClick = { scope.launch {
+                    drawerState.apply { if (isClosed) open() else close() }
+                }}
+            )
+        }
     }
 }
 
@@ -217,11 +213,9 @@ fun DrawerSheet(
                 label = { Text(text = item.title) },
                 selected = item.route == destinationRoute,
                 onClick = { onItemClick(item.route) },
-                icon = {
-                    item.icon?.let {
-                        Icon(imageVector = it, contentDescription = item.title)
-                    }
-                }
+                icon = { item.icon?.let {
+                    Icon(imageVector = it, contentDescription = item.title)
+                }}
             )
         }
     }
@@ -229,11 +223,8 @@ fun DrawerSheet(
 
 @Composable
 fun DirectingText(
-    directingText: String,
-    textButtonText: String,
-    onClick : () -> Unit,
-    fontSize: TextUnit = 14.sp
-
+    directingText: String, textButtonText: String,
+    onClick : () -> Unit, fontSize: TextUnit = 14.sp
 ) {
     Row (verticalAlignment = Alignment.CenterVertically){
         Text(text = directingText, fontSize = fontSize)

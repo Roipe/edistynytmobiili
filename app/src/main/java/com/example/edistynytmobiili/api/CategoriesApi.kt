@@ -3,10 +3,8 @@ package com.example.edistynytmobiili.api
 
 import com.example.edistynytmobiili.model.AddCategoryReq
 import com.example.edistynytmobiili.model.CategoriesResponse
-import com.example.edistynytmobiili.model.CategoryItem
 import com.example.edistynytmobiili.model.CategoryResponse
 import com.example.edistynytmobiili.model.EditCategoryReq
-import com.example.edistynytmobiili.model.RentalItemsResponse
 import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET

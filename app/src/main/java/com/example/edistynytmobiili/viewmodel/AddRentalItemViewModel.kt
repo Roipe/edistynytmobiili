@@ -1,16 +1,12 @@
 package com.example.edistynytmobiili.viewmodel
 
-import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.edistynytmobiili.DbProvider.db
-import com.example.edistynytmobiili.api.authService
-import com.example.edistynytmobiili.api.categoriesService
 import com.example.edistynytmobiili.api.rentalServices
-import com.example.edistynytmobiili.model.AddCategoryReq
 import com.example.edistynytmobiili.model.AddRentalItemReq
 import com.example.edistynytmobiili.model.AddRentalItemState
 import kotlinx.coroutines.launch
@@ -24,7 +20,6 @@ class AddRentalItemViewModel(savedStateHandle: SavedStateHandle) : ViewModel() {
 
 
 
-
     fun setName(newName: String) {
         _addRentalItemState.value = _addRentalItemState.value.copy(name = newName)
     }
@@ -35,14 +30,11 @@ class AddRentalItemViewModel(savedStateHandle: SavedStateHandle) : ViewModel() {
                 clearError()
                 _addRentalItemState.value = _addRentalItemState.value.copy(loading = true)
                 val accessToken = db.accountDao().getToken()?: ""
-                Log.d("token:", "Bearer $accessToken")
                 rentalServices.createItem(
                     id = categoryId,
                     bearerToken = "Bearer $accessToken",
                     AddRentalItemReq(name = _addRentalItemState.value.name)
                 )
-
-                //categoriesService.createCategory(AddCategoryReq(_addRentalItemState.value.name))
                 _addRentalItemState.value = _addRentalItemState.value.copy(done = true)
 
             } catch (e: Exception) {
@@ -52,6 +44,7 @@ class AddRentalItemViewModel(savedStateHandle: SavedStateHandle) : ViewModel() {
             }
         }
     }
+
     fun clearError() {
         _addRentalItemState.value = _addRentalItemState.value.copy(errorMsg = null)
     }

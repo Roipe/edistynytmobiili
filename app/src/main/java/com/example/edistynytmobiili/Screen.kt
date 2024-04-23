@@ -19,20 +19,24 @@ sealed class Screen (val route: String, val title: String = "", val icon: ImageV
     }
     data object AddCategory: Screen(route = "addCategoryScreen")
 
-
     data object RentalItems: Screen(route = "rentalItemsScreen/{categoryId}") {
         fun routeWithId(id: Int) : String {
             return "rentalItemsScreen/$id"
         }
     }
-    data object EditRentalItem: Screen(route = "editRentalItem/{itemId}") {
+    data object EditRentalItem: Screen(route = "editRentalItemScreen/{itemId}") {
         fun routeWithId(id: Int) : String {
-            return "editRentalItem/$id"
+            return "editRentalItemScreen/$id"
         }
     }
-    data object AddRentalItem: Screen(route = "addRentalItem/{categoryId}") {
+    data object AddRentalItem: Screen(route = "addRentalItemScreen/{categoryId}") {
         fun routeWithId(id: Int) : String {
-            return "addRentalItem/$id"
+            return "addRentalItemScreen/$id"
+        }
+    }
+    data object RentalSummary: Screen(route = "rentalSummaryScreen/{itemId}") {
+        fun routeWithId(id: Int) : String {
+            return "rentalSummaryScreen/$id"
         }
     }
 

@@ -1,15 +1,10 @@
 package com.example.edistynytmobiili.api
 
-import com.squareup.moshi.JsonAdapter
-import com.squareup.moshi.Moshi
-import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
+
+import com.google.gson.GsonBuilder
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import retrofit2.converter.moshi.MoshiConverterFactory
 
-//val moshi: Moshi = Moshi.Builder()
-//    .addLast(KotlinJsonAdapterFactory())
- //   .build()
 //Funktio, jolla luodaan jokaiselle api-paketin tiedostolle omat Retrofit-instanssit
 fun createClient(): Retrofit {
 
@@ -20,6 +15,6 @@ fun createClient(): Retrofit {
     //return Retrofit.Builder().baseUrl("https://jsonplaceholder.typicode.com")
         //Tässä konfiguroidaan Retrofit käyttämään gsonia datan muuntamiseen Kotlin data class- ja JSON -muotojen välillä.
         //Käytännössä Gson muuntaa uloslähtevän datan Kotlin data classista JSON-muotoon, sisääntulevan taas JSON-muodosta Kotlin data classiksi.
-        //.addConverterFactory(MoshiConverterFactory.create(moshi)).build()
-        .addConverterFactory(GsonConverterFactory.create()).build()
+
+        .addConverterFactory(GsonConverterFactory.create(GsonBuilder().serializeNulls().create())).build()
 }

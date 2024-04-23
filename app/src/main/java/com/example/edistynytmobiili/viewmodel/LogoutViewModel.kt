@@ -8,7 +8,6 @@ import com.example.edistynytmobiili.AccountDatabase
 import com.example.edistynytmobiili.DbProvider
 import com.example.edistynytmobiili.api.authService
 import com.example.edistynytmobiili.model.LogoutState
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class LogoutViewModel(private val db: AccountDatabase = DbProvider.db) : ViewModel() {
@@ -34,7 +33,7 @@ class LogoutViewModel(private val db: AccountDatabase = DbProvider.db) : ViewMod
             }
         }
     }
-    fun setLogoutStatus(newStatus: Boolean) {
+    private fun setLogoutStatus(newStatus: Boolean) {
         _logoutState.value = _logoutState.value.copy(status = newStatus)
     }
 

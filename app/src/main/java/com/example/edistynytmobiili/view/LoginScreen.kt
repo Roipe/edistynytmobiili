@@ -63,63 +63,43 @@ fun LoginScreen(goToCategories: () -> Unit, goToRegistration: () -> Unit) {
         }
     }
 
-    Box(modifier = Modifier
-        .fillMaxSize()
-        .padding(it)) {
-       /*
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(start = 15.dp, top = 15.dp),
-            horizontalAlignment = Alignment.Start,
-            verticalArrangement = Arrangement.Top
-        ){
-            Text("Log in", fontSize = 18.sp, fontWeight = FontWeight.Medium)
-        }
-
-        */
-        when {
-            vm.loginState.value.loading -> CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
-            else -> Column(
-                modifier = Modifier
-                    //.fillMaxSize()
+        Box(modifier = Modifier
+            .fillMaxSize()
+            .padding(it)) {
+            when {
+                vm.loginState.value.loading -> CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+                else -> Column(modifier = Modifier
                     .fillMaxWidth()
                     .fillMaxHeight(0.7f),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally,
-                ) {
-                Text("Please log in to access the app", fontSize = 18.sp)
-                Spacer(modifier = Modifier.height(30.dp))
-
-                NameTextField(
-                    name = vm.loginState.value.username,
-                    onNameChange = { newUsername ->
-                        vm.setUsername(newUsername)
-                    },
-                )
-                PasswordTextField(
-                    password = vm.loginState.value.password,
-                    onPasswordChange = { newValue ->
-                        vm.setPassword(newValue)
-                    }
-                )
-
-                Button(
-                    enabled = vm.loginState.value.username != "" && vm.loginState.value.password != "",
-                    onClick = { vm.login() },
-                    modifier = Modifier.fillMaxWidth(0.5f)
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally,
                     ) {
-                    Text(text = "Login")
+                    Text("Please log in to access the app", fontSize = 18.sp)
+                    Spacer(modifier = Modifier.height(30.dp))
+                    NameTextField(
+                        name = vm.loginState.value.username,
+                        onNameChange = { newUsername -> vm.setUsername(newUsername) },
+                    )
+                    PasswordTextField(
+                        password = vm.loginState.value.password,
+                        onPasswordChange = { newValue -> vm.setPassword(newValue) }
+                    )
+                    Button(
+                        enabled = vm.loginState.value.username != "" && vm.loginState.value.password != "",
+                        onClick = { vm.login() },
+                        modifier = Modifier.fillMaxWidth(0.5f)
+                        ) {
+                        Text(text = "Login")
+                    }
+                    Spacer(modifier = Modifier.height(12.dp))
+                    DirectingText(
+                        directingText = "New user?",
+                        textButtonText = "Sign Up",
+                        onClick = { goToRegistration() }
+                    )
                 }
-                Spacer(modifier = Modifier.height(12.dp))
-                DirectingText(
-                    directingText = "New user?",
-                    textButtonText = "Sign Up",
-                    onClick = { goToRegistration() }
-                )
             }
         }
-    }
     }
 
 }

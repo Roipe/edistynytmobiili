@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
@@ -20,7 +19,6 @@ import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.OpenInNew
 import androidx.compose.material3.FilledIconButton
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -29,7 +27,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.onClick
@@ -46,9 +43,7 @@ fun ActionOptionsSheet (
 ) {
     val optionColor = MaterialTheme.colorScheme.onBackground
     Box(modifier = Modifier
-        // handle pointer input
         .pointerInput(onClose) { detectTapGestures { onClose() } }
-        // handle accessibility services
         .semantics(mergeDescendants = true) {
             contentDescription = "Close"
             onClick {
@@ -58,7 +53,6 @@ fun ActionOptionsSheet (
         }
         .fillMaxSize()
         .background(MaterialTheme.colorScheme.scrim.copy(alpha = 0.70f)),
-        // = Alignment.Center
     )
     {
         Column (
@@ -68,16 +62,14 @@ fun ActionOptionsSheet (
                 .padding(10.dp)
         ){
 
-                Box(modifier = Modifier.fillMaxWidth(),
-                    contentAlignment = Alignment.TopCenter) {
-                    Box (modifier = Modifier.fillMaxWidth(0.6f)){
-                        ListingItem(name = name, onOpen = { onOpen() })
-
+            Box(modifier = Modifier.fillMaxWidth(),
+                contentAlignment = Alignment.TopCenter) {
+                Box (modifier = Modifier.fillMaxWidth(0.6f)){
+                    ListingItem(name = name, onOpen = { onOpen() })
                     Column(
                         horizontalAlignment = Alignment.End,
                         modifier = Modifier
                             .fillMaxWidth()
-                        //.padding(end=30.dp)
                     ) {
                         FilledIconButton( onClick = {onClose()},
                             colors = IconButtonDefaults.filledIconButtonColors(
@@ -88,34 +80,10 @@ fun ActionOptionsSheet (
                                 contentDescription = "Close",
                                 tint = MaterialTheme.colorScheme.onSecondaryContainer)
                         }
-
-                        /*
-                        TextButton(
-                            onClick = { onClose() },
-                            modifier = Modifier
-                                .clip(RoundedCornerShape(14.dp))
-                                .background(MaterialTheme.colorScheme.surfaceVariant)
-
-                        ) {
-                            Icon(
-                                imageVector = Icons.Filled.Close, contentDescription = "Close",
-                                tint = optionColor
-                            )
-                            (Text(
-                                "Close",
-                                color = optionColor
-                            ))
-                        }
-
-                         */
-
-                        }
                     }
-
                 }
+            }
 
-
-            //ListingItem(name = "kissa")
             Spacer(modifier = Modifier.height(10.dp))
             Row (
                 modifier = Modifier
@@ -152,7 +120,6 @@ fun ActionOptionsSheet (
                 }
 
             }
-
 
         }
 
