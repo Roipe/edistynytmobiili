@@ -17,10 +17,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
+import com.example.edistynytmobiili.R
 
 @Composable
 fun PasswordTextField(
@@ -28,8 +30,8 @@ fun PasswordTextField(
     onPasswordChange: (String) -> Unit,
     isError: Boolean = false,
     errorColor: Color = MaterialTheme.colorScheme.error,
-    textFieldLabel: String = "Password",
-    errorMsg: String? = "Password not valid"
+    textFieldLabel: String = stringResource(R.string.password),
+    errorMsg: String? = stringResource(R.string.password_not_valid)
 ) {
     var showPassword by remember { mutableStateOf(false) }
     OutlinedTextField(
@@ -68,8 +70,8 @@ fun PasswordVisibilityToggleIcon(
         else Icons.Filled.VisibilityOff
 
     val contentDescription =
-        if (showPassword) "Hide password icon"
-        else "Show password icon"
+        if (showPassword) stringResource(R.string.hide_password_icon)
+        else stringResource(R.string.show_password_icon)
 
     IconButton(onClick = { onTogglePasswordVisibility() }) {
         Icon(imageVector = image, contentDescription = contentDescription)

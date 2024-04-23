@@ -36,9 +36,9 @@ interface RentalApi {
     @GET("rentalitem/{id}")
     suspend fun getItem(@Path("id") id: Int): RentalItemStatusRes
     @PUT("rentalitem/{id}")
-    suspend fun editItem(@Path("id") id: Int, @Body editRentalItemReq: EditRentalItemReq) : EditRentalItemRes
+    suspend fun editItem(@Path("id") id: Int, @Header("Authorization") bearerToken: String, @Body editRentalItemReq: EditRentalItemReq) : EditRentalItemRes
     @DELETE("rentalitem/{id}")
-    suspend fun removeItem(@Path("id") id: Int)
+    suspend fun removeItem(@Path("id") id: Int, @Header("Authorization") bearerToken: String)
 
     @POST("rentalitem/{id}/rent")
     suspend fun rentItem(@Path("id") id: Int, @Header("Authorization") bearerToken: String, @Body rentRentalItemReq: RentRentalItemReq)

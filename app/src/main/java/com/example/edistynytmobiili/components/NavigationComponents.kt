@@ -21,6 +21,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -98,6 +99,8 @@ fun NavigationHost(
 
     NavHost(
         navController = navController,
+        // Tällä kirjautumisen vaikutusten testaukset
+        //startDestination = Screen.Categories.route) {
         startDestination = Screen.Login.route) {
 
         composable(route = Screen.Login.route) {
@@ -210,11 +213,11 @@ fun DrawerSheet(
         Spacer(modifier = Modifier.height(16.dp))
         menuScreens.forEach { item ->
             NavigationDrawerItem(
-                label = { Text(text = item.title) },
+                label = { Text(text = stringResource(id = item.title)) },
                 selected = item.route == destinationRoute,
                 onClick = { onItemClick(item.route) },
                 icon = { item.icon?.let {
-                    Icon(imageVector = it, contentDescription = item.title)
+                    Icon(imageVector = it, contentDescription = stringResource(id = item.title))
                 }}
             )
         }

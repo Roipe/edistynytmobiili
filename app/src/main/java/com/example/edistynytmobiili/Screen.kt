@@ -4,14 +4,15 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Logout
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
 
-sealed class Screen (val route: String, val title: String = "", val icon: ImageVector? = null) {
+sealed class Screen (val route: String, val title: Int = 0, val icon: ImageVector? = null) {
     data object Login: Screen(route = "loginScreen")
     data object Logout: Screen(route = "logoutScreen")
-    data object LogoutDialog: Screen(route = "logoutDialog", title = "Logout", icon = Icons.Filled.Logout)
+    data object LogoutDialog: Screen(route = "logoutDialog", title = R.string.log_out, icon = Icons.Filled.Logout)
     data object Registration: Screen(route = "registrationScreen")
 
-    data object Categories: Screen(route = "categoriesScreen", title = "Categories", icon = Icons.Filled.Home)
+    data object Categories: Screen(route = "categoriesScreen", title = R.string.categories, icon = Icons.Filled.Home)
     data object EditCategory: Screen(route = "editCategoryScreen/{categoryId}") {
         fun routeWithId(id: Int) : String {
             return "editCategoryScreen/$id"

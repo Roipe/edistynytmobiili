@@ -6,7 +6,6 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.edistynytmobiili.DbProvider.db
-import com.example.edistynytmobiili.api.authService
 import com.example.edistynytmobiili.api.rentalServices
 import com.example.edistynytmobiili.model.EditRentalItemReq
 import com.example.edistynytmobiili.model.EditRentalItemState
@@ -46,12 +45,10 @@ class EditRentalItemViewModel(
             try {
                 clearError()
                 _editRentalItemState.value = _editRentalItemState.value.copy(loading = true)
-                if(checkAccess()) {
-                    val response =
-                        rentalServices.editItem(_itemId, EditRentalItemReq(name = _editRentalItemState.value.item.name))
-                    _editRentalItemState.value = _editRentalItemState.value.copy(categoryId = response.category.id, done = true)
-                }
-                else throw Exception("Access denied")
+                val accessToken = db.accountDao().getToken()?: ""
+                val response =
+                    rentalServices.editItem(_itemId, "Bearer $accessToken", EditRentalItemReq(name = _editRentalItemState.value.item.name))
+                _editRentalItemState.value = _editRentalItemState.value.copy(categoryId = response.category.id, done = true)
             } catch(e: Exception) {
                 _editRentalItemState.value = _editRentalItemState.value.copy(errorMsg = e.message)
             } finally {
@@ -61,14 +58,7 @@ class EditRentalItemViewModel(
     }
 
 
-    private suspend fun checkAccess() : Boolean {
-        val accessToken = db.accountDao().getToken()
-        accessToken?.let {
-            authService.getAccount("Bearer $it")
-            return true
-        }
-        return false
-    }
+
 
     private fun clearError() {
         _editRentalItemState.value = _editRentalItemState.value.copy(errorMsg = null)

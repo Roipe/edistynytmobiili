@@ -26,8 +26,10 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.edistynytmobiili.R
 import com.example.edistynytmobiili.components.ListingItem
 import com.example.edistynytmobiili.components.NameTextField
 
@@ -51,10 +53,10 @@ fun EditRentalItemScreen(onDone: (Int) -> Unit, onCancel: () -> Unit) {
     }
     Scaffold( topBar = {
         TopAppBar(
-        title = { Text("Edit item")},
+        title = { Text(stringResource(R.string.edit_item))},
         navigationIcon = {
             IconButton(onClick = { onCancel() }) {
-                Icon(imageVector = Icons.Default.ArrowBack, contentDescription = "Back button")
+                Icon(imageVector = Icons.Default.ArrowBack, contentDescription = stringResource(R.string.back_button))
             }
         })
     }){
@@ -77,7 +79,7 @@ fun EditRentalItemScreen(onDone: (Int) -> Unit, onCancel: () -> Unit) {
                         }
                         NameTextField(name = vm.editRentalItemState.value.item.name,
                             onNameChange = { newName -> vm.setName(newName) },
-                            textFieldLabel = "Category name",
+                            textFieldLabel = stringResource(R.string.category_name),
                             isError = !vm.editRentalItemState.value.errorMsg.isNullOrBlank(),
                             errorMsg = vm.editRentalItemState.value.errorMsg
                         )
@@ -85,10 +87,10 @@ fun EditRentalItemScreen(onDone: (Int) -> Unit, onCancel: () -> Unit) {
                         Row (modifier = Modifier.fillMaxWidth(),
                             horizontalArrangement = Arrangement.SpaceEvenly) {
                             Button(onClick = { onCancel() }
-                            ) { Text("Cancel") }
+                            ) { Text(stringResource(R.string.cancel)) }
                             Button(enabled = vm.editRentalItemState.value.item.name != "",
                                 onClick = { vm.editItem() }) {
-                                Text("Save")
+                                Text(stringResource(R.string.save))
                             }
                         }
                     }

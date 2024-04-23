@@ -28,10 +28,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.onClick
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
+import com.example.edistynytmobiili.R
 
 @Composable
 fun ActionOptionsSheet (
@@ -42,17 +44,17 @@ fun ActionOptionsSheet (
     onClose: () -> Unit,
 ) {
     val optionColor = MaterialTheme.colorScheme.onBackground
-    Box(modifier = Modifier
-        .pointerInput(onClose) { detectTapGestures { onClose() } }
-        .semantics(mergeDescendants = true) {
-            contentDescription = "Close"
-            onClick {
-                onClose()
-                true
+    Box(
+        modifier = Modifier
+            .pointerInput(onClose) { detectTapGestures { onClose() } }
+            .semantics(mergeDescendants = true) {
+                onClick {
+                    onClose()
+                    true
+                }
             }
-        }
-        .fillMaxSize()
-        .background(MaterialTheme.colorScheme.scrim.copy(alpha = 0.70f)),
+            .fillMaxSize()
+            .background(MaterialTheme.colorScheme.scrim.copy(alpha = 0.70f)),
     )
     {
         Column (
@@ -77,7 +79,7 @@ fun ActionOptionsSheet (
                         ) {
                             Icon(
                                 imageVector = Icons.Filled.Close,
-                                contentDescription = "Close",
+                                contentDescription = stringResource(R.string.close),
                                 tint = MaterialTheme.colorScheme.onSecondaryContainer)
                         }
                     }
@@ -95,26 +97,29 @@ fun ActionOptionsSheet (
                 horizontalArrangement = Arrangement.SpaceEvenly
             ){
                 TextButton(onClick = { onOpen() }) {
-                    Icon(imageVector = Icons.Default.OpenInNew, contentDescription = "Open",
+                    Icon(imageVector = Icons.Default.OpenInNew, contentDescription = stringResource(
+                        R.string.open
+                    ),
                         tint = optionColor
                     )
-                    (Text("Open",
+                    (Text(stringResource(
+                        R.string.open),
                         color = optionColor
                     ))
                 }
                 TextButton(onClick = { onEdit() }) {
-                    Icon(imageVector = Icons.Default.Edit, contentDescription = "Edit name",
+                    Icon(imageVector = Icons.Default.Edit, contentDescription = stringResource(R.string.edit_name),
                         tint = optionColor
                     )
-                    (Text("Edit name",
+                    (Text(stringResource(R.string.edit_name),
                         color = optionColor
                     ))
                 }
                 TextButton(onClick = { onDelete() }) {
-                    Icon(imageVector = Icons.Default.Delete, contentDescription = "Delete",
+                    Icon(imageVector = Icons.Default.Delete, contentDescription = stringResource(R.string.delete),
                         tint = optionColor
                     )
-                    (Text("Delete",
+                    (Text(stringResource(R.string.delete),
                         color = optionColor
                     ))
                 }

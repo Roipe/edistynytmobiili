@@ -4,6 +4,8 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.edistynytmobiili.DbProvider
+import com.example.edistynytmobiili.api.authService
 import com.example.edistynytmobiili.api.categoriesService
 import com.example.edistynytmobiili.model.AddCategoryReq
 import com.example.edistynytmobiili.model.AddCategoryState
@@ -23,9 +25,9 @@ class AddCategoryViewModel : ViewModel() {
             try {
                 clearError()
                 _addCategoryState.value = _addCategoryState.value.copy(loading = true)
-                categoriesService.createCategory(AddCategoryReq(_addCategoryState.value.name))
+                val accessToken = DbProvider.db.accountDao().getToken()?: ""
+                categoriesService.createCategory("Bearer $accessToken", AddCategoryReq(_addCategoryState.value.name))
                 _addCategoryState.value = _addCategoryState.value.copy(done = true)
-
             } catch (e: Exception) {
                 _addCategoryState.value = _addCategoryState.value.copy(errorMsg = e.message)
             } finally {
@@ -33,8 +35,9 @@ class AddCategoryViewModel : ViewModel() {
             }
         }
     }
-    fun clearError() {
+    private fun clearError() {
         _addCategoryState.value = _addCategoryState.value.copy(errorMsg = null)
     }
+
 
 }

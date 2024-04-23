@@ -6,6 +6,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
+import com.example.edistynytmobiili.R
 
 @Composable
 fun NameTextField(
@@ -13,8 +15,8 @@ fun NameTextField(
     onNameChange: (String) -> Unit,
     isError: Boolean = false,
     errorColor: Color = MaterialTheme.colorScheme.error,
-    textFieldLabel: String = "Name",
-    errorMsg: String? = "Name not valid"
+    textFieldLabel: String = stringResource(R.string.name),
+    errorMsg: String? = stringResource(R.string.name_not_valid)
 ) {
     OutlinedTextField(
         label = { Text(textFieldLabel) },

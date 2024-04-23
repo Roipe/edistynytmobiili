@@ -3,7 +3,9 @@ package com.example.edistynytmobiili.view
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
@@ -33,9 +35,12 @@ import androidx.compose.ui.draw.clip
 
 
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.edistynytmobiili.R
 
 import com.example.edistynytmobiili.components.AddNewListing
 import com.example.edistynytmobiili.components.ActionOptionsSheet
@@ -62,16 +67,22 @@ fun ConfirmCategoryDelete(
     }
 
     AlertDialog(
-        title = {Text("Are you sure?")},
-        text = { Text("Are you sure you want to delete \"$name\"?") },
+        title = {Text(stringResource(R.string.are_you_sure))},
+        text = { Column {
+            Text(stringResource(R.string.are_you_sure_you_want_to_delete))
+            Row {
+                Text("\"$name\"", fontWeight = FontWeight.Medium)
+                Text(stringResource(R.string.question_mark))
+            }
+        } },
         onDismissRequest = { /*TODO*/ },
         confirmButton = {
             TextButton(onClick = { onConfirm() }) {
-                Text("Delete")
+                Text(stringResource(R.string.delete))
         } },
         dismissButton = {
             TextButton(onClick = { onCancel() }) {
-                Text("Cancel")
+                Text(stringResource(R.string.cancel))
             }
         }
     )
@@ -89,16 +100,16 @@ fun CategoriesScreen(
 
     Scaffold(
         topBar = { TopAppBar(
-            title = { Text("Categories")},
+            title = { Text(stringResource(R.string.categories))},
                 //Yläpalkin ikonia painettaessa launchataan coroutine, joka avaa tai sulkee drawerin sen tilasta riippuen.
                 navigationIcon = {
                     IconButton(onClick = { onMenuClick() }) {
-                        Icon(Icons.Default.Menu, contentDescription = "Menu")
+                        Icon(Icons.Default.Menu, contentDescription = stringResource(R.string.menu))
                     }
                 },
                 actions = {
                     IconButton(onClick = { goToAddCategory() }) {
-                        Icon(imageVector = Icons.Filled.Add, contentDescription = "Add Category")
+                        Icon(imageVector = Icons.Filled.Add, contentDescription = stringResource(R.string.add_category))
                     }
                 }
 
@@ -115,7 +126,7 @@ fun CategoriesScreen(
                 )
 
                 vm.categoriesState.value.errorMsg != null ->
-                    Text("Error: ${vm.categoriesState.value.errorMsg}")
+                    Text(stringResource(R.string.error) + vm.categoriesState.value.errorMsg)
                 else -> LazyColumn(
                     contentPadding = PaddingValues(10.dp),
                     modifier = Modifier
@@ -135,7 +146,7 @@ fun CategoriesScreen(
                     }
                     item {
                         Spacer(modifier = Modifier.height(5.dp))
-                        AddNewListing(name = "Add a new category", onClick = { goToAddCategory() })
+                        AddNewListing(name = stringResource(R.string.add_a_new_category), onClick = { goToAddCategory() })
                         Spacer(modifier = Modifier.height(5.dp))
                     }
                 }

@@ -25,8 +25,10 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.edistynytmobiili.R
 import com.example.edistynytmobiili.components.ListingItem
 import com.example.edistynytmobiili.components.NameTextField
 import com.example.edistynytmobiili.viewmodel.EditCategoryViewModel
@@ -49,10 +51,10 @@ fun EditCategoryScreen(goToCategories: () -> Unit, onCancel: () -> Unit) {
     }
     Scaffold( topBar = {
         TopAppBar(
-            title = { Text("Edit category")},
+            title = { Text(stringResource(R.string.edit_category))},
             navigationIcon = {
                 IconButton(onClick = { onCancel() }) {
-                    Icon(imageVector = Icons.Default.ArrowBack, contentDescription = "Back button")
+                    Icon(imageVector = Icons.Default.ArrowBack, contentDescription = stringResource(R.string.back_button))
                 }
             }
         )
@@ -77,7 +79,7 @@ fun EditCategoryScreen(goToCategories: () -> Unit, onCancel: () -> Unit) {
                         }
                         NameTextField(name = vm.editCategoryState.value.item.name,
                             onNameChange = { newName -> vm.setName(newName) },
-                            textFieldLabel = "Category name",
+                            textFieldLabel = stringResource(R.string.category_name),
                             isError = !vm.editCategoryState.value.errorMsg.isNullOrBlank(),
                             errorMsg = vm.editCategoryState.value.errorMsg
                         )
@@ -87,14 +89,14 @@ fun EditCategoryScreen(goToCategories: () -> Unit, onCancel: () -> Unit) {
                             horizontalArrangement = Arrangement.SpaceEvenly
                         ){
                             Button(onClick = { onCancel() }) {
-                                Text("Cancel")
+                                Text(stringResource(R.string.cancel))
                             }
                             Button(
                                 enabled = vm.editCategoryState.value.item.name != "",
                                 onClick = {
                                     vm.editCategory()
                                 }
-                            ) { Text("Save") }
+                            ) { Text(stringResource(R.string.save)) }
                         }
                     }
                 }

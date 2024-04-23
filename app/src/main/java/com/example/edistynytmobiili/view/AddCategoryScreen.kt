@@ -31,8 +31,11 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.edistynytmobiili.MainActivity
+import com.example.edistynytmobiili.R
 import com.example.edistynytmobiili.components.NameTextField
 import com.example.edistynytmobiili.viewmodel.AddCategoryViewModel
 
@@ -52,10 +55,10 @@ fun AddCategoryScreen(onDone : () -> Unit, onCancel : () -> Unit) {
         }
     }
     Scaffold(
-        topBar = { TopAppBar(title = { Text("Add a new category") },
+        topBar = { TopAppBar(title = { Text(stringResource(R.string.add_a_new_category)) },
             navigationIcon = { IconButton(onClick = { onCancel() }) {
                 Icon(imageVector = Icons.Default.ArrowBack,
-                    contentDescription = "back button"
+                    contentDescription = stringResource(R.string.back_button)
                 )}
             }
         )}
@@ -79,30 +82,29 @@ fun AddCategoryScreen(onDone : () -> Unit, onCancel : () -> Unit) {
                             horizontalArrangement = Arrangement.SpaceEvenly){
                             IconButton(onClick = { /*TODO*/ }) {
                                 Icon(imageVector = Icons.Filled.AddPhotoAlternate,
-                                    contentDescription = "Select picture",
+                                    contentDescription = stringResource(R.string.select_picture),
                                     modifier = Modifier.size(30.dp))
                             }
-                            Text("Select picture")
+                            Text(stringResource(R.string.select_picture))
                         }
-
                         NameTextField(name = vm.addCategoryState.value.name,
                             onNameChange = { newName ->
                                 vm.setName(newName)
                             },
-                            textFieldLabel = "Category name",
+                            textFieldLabel = stringResource(R.string.category_name),
                             isError = !vm.addCategoryState.value.errorMsg.isNullOrBlank(),
                             errorMsg = vm.addCategoryState.value.errorMsg
                         )
                         Row (modifier = Modifier.fillMaxWidth(),
                             horizontalArrangement = Arrangement.SpaceEvenly){
                             Button(onClick = { onCancel() }) {
-                                Text("Cancel")
+                                Text(stringResource(R.string.cancel))
                             }
                             Button(
                                 enabled = vm.addCategoryState.value.name != "",
                                 onClick = { vm.addCategory() }
                             ) {
-                                Text("Save")
+                                Text(stringResource(R.string.save))
                             }
                         }
                     }

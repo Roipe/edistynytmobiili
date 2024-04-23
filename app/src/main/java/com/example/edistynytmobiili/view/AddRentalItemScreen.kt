@@ -27,8 +27,10 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.edistynytmobiili.R
 import com.example.edistynytmobiili.components.NameTextField
 import com.example.edistynytmobiili.viewmodel.AddRentalItemViewModel
 
@@ -50,12 +52,12 @@ fun AddRentalItemScreen(onDone : (Int) -> Unit, onCancel : () -> Unit) {
     }
     Scaffold(
         topBar = {
-            TopAppBar(title = { Text("Add a new item") },
+            TopAppBar(title = { Text(stringResource(R.string.add_a_new_item)) },
                 navigationIcon = {
                     IconButton(onClick = { onCancel() }) {
                         Icon(
                             imageVector = Icons.Default.ArrowBack,
-                            contentDescription = "back button"
+                            contentDescription = stringResource(R.string.back_button)
                         )
                     }
                 }
@@ -64,8 +66,8 @@ fun AddRentalItemScreen(onDone : (Int) -> Unit, onCancel : () -> Unit) {
         }
     ){
         Box(modifier = Modifier
-                .fillMaxSize()
-                .padding(it),
+            .fillMaxSize()
+            .padding(it),
             contentAlignment = Alignment.TopCenter
         ) {
             when {
@@ -81,28 +83,28 @@ fun AddRentalItemScreen(onDone : (Int) -> Unit, onCancel : () -> Unit) {
                             horizontalArrangement = Arrangement.SpaceEvenly){
                             IconButton(onClick = { /*TODO*/ }) {
                                 Icon(imageVector = Icons.Filled.AddPhotoAlternate,
-                                    contentDescription = "Select picture",
+                                    contentDescription = stringResource(R.string.select_picture),
                                     modifier = Modifier.size(30.dp))
                             }
-                            Text("Select picture")
+                            Text(stringResource(R.string.select_picture))
                         }
 
                         NameTextField(name = vm.addRentalItemState.value.name,
                             onNameChange = { newName -> vm.setName(newName) },
-                            textFieldLabel = "Item name",
+                            textFieldLabel = stringResource(R.string.item_name),
                             isError = !vm.addRentalItemState.value.errorMsg.isNullOrBlank(),
                             errorMsg = vm.addRentalItemState.value.errorMsg
                         )
                         Row (modifier = Modifier.fillMaxWidth(),
                             horizontalArrangement = Arrangement.SpaceEvenly){
                             Button(onClick = { onCancel() }) {
-                                Text("Cancel")
+                                Text(stringResource(R.string.cancel))
                             }
                             Button(
                                 enabled = vm.addRentalItemState.value.name != "",
                                 onClick = { vm.addRentalItem() }
                             ) {
-                                Text("Save")
+                                Text(stringResource(R.string.save))
                             }
                         }
 

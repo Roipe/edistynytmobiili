@@ -7,6 +7,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.edistynytmobiili.DbProvider
+import com.example.edistynytmobiili.api.authService
 import com.example.edistynytmobiili.api.categoriesService
 import com.example.edistynytmobiili.api.rentalServices
 import com.example.edistynytmobiili.model.DeleteRentalItemState
@@ -103,7 +104,9 @@ class RentalItemsViewModel(savedStateHandle: SavedStateHandle) : ViewModel() {
         viewModelScope.launch {
             try {
                 _rentalItemsState.value = _rentalItemsState.value.copy(loading = true)
-                rentalServices.removeItem(_deleteRentalItemState.value.id)
+                val accessToken = DbProvider.db.accountDao().getToken()?: ""
+                rentalServices.removeItem(id = _deleteRentalItemState.value.id,
+                    bearerToken = "Bearer $accessToken")
                 val listOfItems = _rentalItemsState.value.list.filter {
                     _deleteRentalItemState.value.id != it.id
                 }
@@ -117,6 +120,7 @@ class RentalItemsViewModel(savedStateHandle: SavedStateHandle) : ViewModel() {
             }
         }
     }
+
     private fun refresh() {
         getItems()
         setItemForRemoval()

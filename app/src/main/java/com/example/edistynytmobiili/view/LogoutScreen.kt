@@ -22,25 +22,27 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.edistynytmobiili.R
 import com.example.edistynytmobiili.viewmodel.LogoutViewModel
 
 @Composable
 fun LogoutConfirmationDialog(onConfirm : () -> Unit, onCancel: () -> Unit) {
 
     AlertDialog(
-        title = {Text("Confirm logout")},
-        text = { Text("Are you sure you want to logout?") },
+        title = {Text(stringResource(R.string.confirm_logout))},
+        text = { Text(stringResource(R.string.are_you_sure_you_want_to_logout)) },
         onDismissRequest = { /*TODO*/ },
         confirmButton = {
             TextButton(onClick = { onConfirm() }) {
-                Text("Logout")
+                Text(stringResource(R.string.logout))
             }
         }, dismissButton = {
             TextButton(onClick = { onCancel() }) {
-                Text("Cancel")
+                Text(stringResource(R.string.cancel))
             }
         }
     )
@@ -65,13 +67,13 @@ fun LogoutScreen(goToLogin : () -> Unit) {
                 verticalArrangement = Arrangement.SpaceEvenly,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Text("Logged out successfully!", fontSize = 24.sp)
+                Text(stringResource(R.string.logged_out_successfully), fontSize = 24.sp)
                 Text("\uD83D\uDC4D",fontSize = 64.sp)
                 Spacer(modifier = Modifier.height(10.dp))
                 Button(onClick = { goToLogin()}) {
-                    Icon(Icons.Filled.Login, contentDescription = "Back to login",
+                    Icon(Icons.Filled.Login, contentDescription = stringResource(R.string.back_to_login),
                         modifier = Modifier.padding(end = 10.dp))
-                    Text("Log back in")
+                    Text(stringResource(R.string.log_back_in))
                 }
             }
         }

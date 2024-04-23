@@ -17,6 +17,7 @@ import com.example.edistynytmobiili.components.NavigationComponents
 import com.example.edistynytmobiili.ui.theme.EdistynytMobiiliTheme
 
 class MainActivity : ComponentActivity() {
+    val windowSizeInfo = 0
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -30,7 +31,6 @@ class MainActivity : ComponentActivity() {
                     val scope = rememberCoroutineScope()
                     val navController = rememberNavController()
                     val currentBackStackEntry by navController.currentBackStackEntryAsState()
-
 
                     NavigationComponents(
                         drawerState = drawerState,

@@ -1,9 +1,12 @@
 package com.example.edistynytmobiili.components
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateColor
 import androidx.compose.animation.core.animateDp
 
 import androidx.compose.animation.core.updateTransition
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.shrinkVertically
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
@@ -20,6 +23,7 @@ import androidx.compose.foundation.layout.Spacer
 
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 
 
 import androidx.compose.foundation.layout.padding
@@ -52,11 +56,13 @@ import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalHapticFeedback
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
+import com.example.edistynytmobiili.R
 
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -124,24 +130,29 @@ fun ExpandableListingItem(
                     .padding(2.dp),
                     color = MaterialTheme.colorScheme.onSecondary,
                     fontWeight = FontWeight.Medium,
-                    text = "Unavailable")
+                    text = stringResource(R.string.unavailable)
+                )
             }
 
             }
-            if (isExpanded)
-                Column (horizontalAlignment = Alignment.Start) {
+            AnimatedVisibility(visible = isExpanded, enter = expandVertically(), exit = shrinkVertically()) {
+                Column (modifier = Modifier.padding(start = 5.dp, end = 5.dp, top = 10.dp),
+                    horizontalAlignment = Alignment.Start) {
                     Row {
-                        Text("Features", fontWeight = FontWeight.Medium)
+                        Text(stringResource(R.string.features), fontWeight = FontWeight.Medium)
                     }
-                    Text("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.")
+                    Text(stringResource(R.string.lorem))
                     Row (horizontalArrangement = Arrangement.Center,
                         modifier = Modifier.fillMaxWidth()){
                         IconButton(onClick = { onClose() }) {
-                            Icon(imageVector = Icons.Filled.ExpandLess, contentDescription = "Show less")
+                            Icon(imageVector = Icons.Filled.ExpandLess, contentDescription = stringResource(
+                                R.string.show_less
+                            )
+                            )
                         }
                     }
                 }
-
+            }
         }
         if(!isAvailable && !isExpanded)
             Box(modifier = Modifier
@@ -156,7 +167,7 @@ fun ExpandableListingItem(
                     containerColor = MaterialTheme.colorScheme.secondaryContainer)
             ){
                 Icon(imageVector = Icons.Filled.MoreHoriz,
-                    contentDescription = "Action options",
+                    contentDescription = stringResource(R.string.action_options),
                     tint = MaterialTheme.colorScheme.onSecondaryContainer)
             }
         }
@@ -259,7 +270,7 @@ fun SelectableListingItem(
                     .padding(2.dp),
                     color = MaterialTheme.colorScheme.onSecondary,
                     fontWeight = FontWeight.Medium,
-                    text = "Unavailable")
+                    text = stringResource(R.string.unavailable))
             }
 
         }
@@ -276,7 +287,7 @@ fun SelectableListingItem(
                         containerColor = MaterialTheme.colorScheme.secondaryContainer)
                 ){
                     Icon(imageVector = Icons.Filled.MoreHoriz,
-                        contentDescription = "Action options",
+                        contentDescription = stringResource(R.string.action_options),
                         tint = MaterialTheme.colorScheme.onSecondaryContainer)
                 }
             }
@@ -304,7 +315,7 @@ fun AddNewListing(
 
             Box {
                 Icon(imageVector = Icons.Filled.Add,
-                    contentDescription = "Add",
+                    contentDescription = stringResource(R.string.add),
                     tint = MaterialTheme.colorScheme.primary,
                     modifier = Modifier
                         .padding(10.dp)
@@ -333,7 +344,7 @@ fun RandomImage(modifier: Modifier = Modifier) {
         model = ImageRequest.Builder(LocalContext.current)
             .data("https://picsum.photos/300")
             .build(),
-        contentDescription = "Random image",
+        contentDescription = stringResource(R.string.random_image),
         modifier = modifier.clip(RoundedCornerShape(16.dp))
     )
 }
@@ -344,7 +355,7 @@ fun BiggerRandomImage(modifier: Modifier = Modifier) {
         model = ImageRequest.Builder(LocalContext.current)
             .data("https://picsum.photos/300")
             .build(),
-        contentDescription = "Random image",
+        contentDescription = stringResource(R.string.random_image),
         contentScale = ContentScale.Fit,
         modifier = modifier
             .clip(RoundedCornerShape(16.dp))

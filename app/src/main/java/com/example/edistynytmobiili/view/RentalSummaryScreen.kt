@@ -26,9 +26,11 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.edistynytmobiili.R
 import com.example.edistynytmobiili.components.RandomImage
 import com.example.edistynytmobiili.viewmodel.RentalSummaryViewModel
 
@@ -45,11 +47,11 @@ fun RentalSummaryScreen(goToCategories : () -> Unit, onMenuClick: () -> Unit) {
     }
 
     Scaffold(
-        topBar = { TopAppBar(title = { Text("Rental summary") },
+        topBar = { TopAppBar(title = { Text(stringResource(R.string.rental_summary)) },
             navigationIcon = { IconButton(onClick = { onMenuClick() }) {
-                Icon(imageVector = Icons.Default.Menu, contentDescription = "Menu")
+                Icon(imageVector = Icons.Default.Menu, contentDescription = stringResource(R.string.menu))
             } }, actions = {IconButton(onClick = { goToCategories() }) {
-                Icon(imageVector = Icons.Default.Check, contentDescription = "Ok")
+                Icon(imageVector = Icons.Default.Check, contentDescription = stringResource(R.string.ok))
             } }
         )}
     ) {
@@ -62,24 +64,24 @@ fun RentalSummaryScreen(goToCategories : () -> Unit, onMenuClick: () -> Unit) {
             Column {
                 Row ( modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.Center) {
-                    Text("Rental confirmed!")
+                    Text(stringResource(R.string.rental_confirmed))
                 }
                 Spacer(Modifier.height(30.dp))
                 Row (modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceEvenly ){
                     RandomImage()
                     Column {
-                        Text("Item")
+                        Text(stringResource(R.string.item))
                         Text(vm.rentalSummaryState.value.itemName, fontWeight = FontWeight.Medium)
-                        Text("Rental expires")
-                        Text("dd/mm/yyyy", fontWeight = FontWeight.Medium)
+                        Text(stringResource(R.string.rental_expires))
+                        Text(stringResource(R.string.dd_mm_yyyy), fontWeight = FontWeight.Medium)
                     }
                 }
                 Spacer(Modifier.height(30.dp))
                 Row (modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceEvenly) {
                     Button(onClick = { goToCategories() }) {
-                        Text("Back to main menu")
+                        Text(stringResource(R.string.back_to_main_menu))
                     }
                 }
 

@@ -26,10 +26,12 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.edistynytmobiili.R
 import com.example.edistynytmobiili.components.DirectingText
 import com.example.edistynytmobiili.components.NameTextField
 import com.example.edistynytmobiili.components.PasswordTextField
@@ -75,12 +77,12 @@ fun RegistrationScreen(goToLogin : () -> Unit) {
     val context = LocalContext.current
 
     Scaffold(
-        topBar = { TopAppBar(title = {Text("Sign up") },
+        topBar = { TopAppBar(title = {Text(stringResource(R.string.sign_up)) },
             navigationIcon = {
                 IconButton(onClick = { goToLogin() }) {
                     Icon(
                         imageVector = Icons.Default.ArrowBack,
-                        contentDescription = "back to login"
+                        contentDescription = stringResource(R.string.back_to_login)
                     )
                 }
             })
@@ -118,7 +120,7 @@ fun RegistrationScreen(goToLogin : () -> Unit) {
                     horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
 
-                    Text("Create your username and password", fontSize = 18.sp)
+                    Text(stringResource(R.string.create_your_username_and_password), fontSize = 18.sp)
                     Spacer(modifier = Modifier.height(30.dp))
                     NameTextField(
                         name = vm.registrationState.value.username,
@@ -141,7 +143,7 @@ fun RegistrationScreen(goToLogin : () -> Unit) {
                         },
                         isError = vm.registrationState.value.isPasswordError,
                         errorMsg = vm.registrationState.value.errorMsg,
-                        textFieldLabel = "Confirm password"
+                        textFieldLabel = stringResource(R.string.confirm_password)
 
                     )
                     Button(
@@ -151,11 +153,11 @@ fun RegistrationScreen(goToLogin : () -> Unit) {
                         onClick = { vm.register() },
                         modifier = Modifier.fillMaxWidth(0.5f)
                     ) {
-                        Text(text = "Register")
+                        Text(text = stringResource(R.string.register))
                     }
                     DirectingText(
-                        directingText = "Already have an account?",
-                        textButtonText = "Log in",
+                        directingText = stringResource(R.string.already_have_an_account),
+                        textButtonText = stringResource(R.string.log_in),
                         onClick = { goToLogin() },
                     )
                 }

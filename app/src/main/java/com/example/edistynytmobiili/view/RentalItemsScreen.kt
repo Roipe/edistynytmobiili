@@ -3,6 +3,7 @@ package com.example.edistynytmobiili.view
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -33,8 +34,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.edistynytmobiili.R
 import com.example.edistynytmobiili.components.AddNewListing
 import com.example.edistynytmobiili.components.ActionOptionsSheet
 import com.example.edistynytmobiili.components.ExpandableListingItem
@@ -64,10 +68,10 @@ fun RentalItemsScreen (
     Scaffold(
         topBar = { TopAppBar(title = { Text(vm.rentalItemsState.value.categoryName) },
             navigationIcon = { IconButton(onClick = { onBack() }) {
-                Icon(Icons.Default.ArrowBack, contentDescription = "Back")
+                Icon(Icons.Default.ArrowBack, contentDescription = stringResource(R.string.back_button))
             } }, actions = {
                     IconButton(onClick = { goToAddItem(vm.categoryId)}) {
-                        Icon(imageVector = Icons.Filled.Add, contentDescription = "Add Category")
+                        Icon(imageVector = Icons.Filled.Add, contentDescription = stringResource(R.string.add_category))
                     }
                 }
         ) }
@@ -104,7 +108,7 @@ fun RentalItemsScreen (
                                     onClick = {vm.rentItem(item.id)},
                                     shape = RoundedCornerShape(5.dp),
                                     enabled = item.isFree) {
-                                    Text("Rent")
+                                    Text(stringResource(R.string.rent))
                                 }
                             }
 
@@ -113,7 +117,7 @@ fun RentalItemsScreen (
                         }
                         item {
                             Spacer(modifier = Modifier.height(5.dp))
-                            AddNewListing(name = "Add a new item", onClick = { goToAddItem(vm.categoryId) })
+                            AddNewListing(name = stringResource(R.string.add_a_new_item), onClick = { goToAddItem(vm.categoryId) })
                             Spacer(modifier = Modifier.height(5.dp))
                         }
 
@@ -158,16 +162,22 @@ fun ConfirmRentalItemDelete(
     }
 
     AlertDialog(
-        title = {Text("Are you sure?")},
-        text = { Text("Are you sure you want to delete \"$name\"?") },
+        title = {Text(stringResource(R.string.are_you_sure))},
+        text = { Column {
+            Text(stringResource(R.string.are_you_sure_you_want_to_delete))
+            Row {
+                Text("\"$name\"", fontWeight = FontWeight.Medium)
+                Text(stringResource(R.string.question_mark))
+            }
+        } },
         onDismissRequest = { /*TODO*/ },
         confirmButton = {
             TextButton(onClick = { onConfirm() }) {
-                Text("Delete")
+                Text(stringResource(R.string.delete))
             }
         }, dismissButton = {
             TextButton(onClick = { onCancel() }) {
-                Text("Cancel")
+                Text(stringResource(R.string.cancel))
             }
         }
     )

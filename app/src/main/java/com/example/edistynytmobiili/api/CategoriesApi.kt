@@ -8,6 +8,7 @@ import com.example.edistynytmobiili.model.EditCategoryReq
 import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
+import retrofit2.http.Header
 import retrofit2.http.POST
 import retrofit2.http.PUT
 import retrofit2.http.Path
@@ -35,7 +36,7 @@ interface CategoriesApi {
     @GET("category/{id}")
     suspend fun getCategory(@Path("id") id: Int): CategoryResponse
     @POST("category/")
-    suspend fun createCategory(@Body req: AddCategoryReq) : CategoryResponse
+    suspend fun createCategory(@Header("Authorization") bearerToken: String, @Body req: AddCategoryReq) : CategoryResponse
     @PUT("category/{id}")
     suspend fun editCategory(@Path("id") id: Int, @Body editCategoryReq: EditCategoryReq) : CategoryResponse
     @DELETE("category/{id}")

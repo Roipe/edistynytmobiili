@@ -28,12 +28,14 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.edistynytmobiili.R
 import com.example.edistynytmobiili.components.DirectingText
 import com.example.edistynytmobiili.components.NameTextField
 import com.example.edistynytmobiili.components.PasswordTextField
@@ -47,7 +49,7 @@ fun LoginScreen(goToCategories: () -> Unit, goToRegistration: () -> Unit) {
     val vm: LoginViewModel = viewModel()
     val context = LocalContext.current
     Scaffold(
-        topBar = { TopAppBar(title = {Text("Login") }) }
+        topBar = { TopAppBar(title = {Text(stringResource(R.string.login)) }) }
     ) {
     //LaunchedEffect errorin toastiin tulostamiselle
     LaunchedEffect(key1 = vm.loginState.value.errorMsg) {
@@ -74,7 +76,7 @@ fun LoginScreen(goToCategories: () -> Unit, goToRegistration: () -> Unit) {
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally,
                     ) {
-                    Text("Please log in to access the app", fontSize = 18.sp)
+                    Text(stringResource(R.string.please_log_in_to_access_the_app), fontSize = 18.sp)
                     Spacer(modifier = Modifier.height(30.dp))
                     NameTextField(
                         name = vm.loginState.value.username,
@@ -89,12 +91,12 @@ fun LoginScreen(goToCategories: () -> Unit, goToRegistration: () -> Unit) {
                         onClick = { vm.login() },
                         modifier = Modifier.fillMaxWidth(0.5f)
                         ) {
-                        Text(text = "Login")
+                        Text(text = stringResource(R.string.login))
                     }
                     Spacer(modifier = Modifier.height(12.dp))
                     DirectingText(
-                        directingText = "New user?",
-                        textButtonText = "Sign Up",
+                        directingText = stringResource(R.string.new_user),
+                        textButtonText = stringResource(R.string.sign_up),
                         onClick = { goToRegistration() }
                     )
                 }
