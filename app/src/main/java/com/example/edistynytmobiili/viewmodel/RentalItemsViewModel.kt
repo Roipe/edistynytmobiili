@@ -34,12 +34,14 @@ class RentalItemsViewModel(savedStateHandle: SavedStateHandle) : ViewModel() {
     init {
         getItems()
     }
+    //Tällä laajennetaan klikatun esineen lisätiedot näkyville
     fun setOpenItem(item: RentalItem = RentalItem()) {
         _rentalState.value = _rentalState.value.copy(openItem = item)
     }
     fun isOpenItem (id: Int) : Boolean {
         return _rentalState.value.openItem.id == id
     }
+    //Tällä määritetään mikä esine on muokkauksen kohteena
     fun setSelectedItem (name: String = "", id: Int = 0) {
         var newItem = RentalItem(name = name, id = id)
 

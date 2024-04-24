@@ -175,8 +175,9 @@ fun RentalItemsScreen (
                 name = vm.rentalState.value.selectedItem.name,
                 errorString = vm.deleteRentalItemState.value.errorMsg
                 )
+            //Ehtolause lisäasetusten näyttämistä varten
             if(vm.rentalState.value.selectedItem.name != "")
-                Row (){
+                Row {
                     ActionOptionsSheet(
                         name = vm.rentalState.value.selectedItem.name,
                         onOpen = {
