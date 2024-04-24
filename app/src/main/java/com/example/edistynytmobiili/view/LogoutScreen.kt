@@ -38,7 +38,7 @@ fun LogoutConfirmationDialog(onConfirm : () -> Unit, onCancel: () -> Unit) {
         onDismissRequest = { /*TODO*/ },
         confirmButton = {
             TextButton(onClick = { onConfirm() }) {
-                Text(stringResource(R.string.logout))
+                Text(stringResource(R.string.log_out))
             }
         }, dismissButton = {
             TextButton(onClick = { onCancel() }) {

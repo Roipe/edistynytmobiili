@@ -91,7 +91,7 @@ fun LoginScreen(goToCategories: () -> Unit, goToRegistration: () -> Unit) {
                         onClick = { vm.login() },
                         modifier = Modifier.fillMaxWidth(0.5f)
                         ) {
-                        Text(text = stringResource(R.string.login))
+                        Text(text = stringResource(R.string.log_in))
                     }
                     Spacer(modifier = Modifier.height(12.dp))
                     DirectingText(

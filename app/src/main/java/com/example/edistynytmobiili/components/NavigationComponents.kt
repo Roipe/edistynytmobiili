@@ -32,6 +32,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 
 import com.example.edistynytmobiili.Screen
+import com.example.edistynytmobiili.WindowSizeInfo
 
 import com.example.edistynytmobiili.menuScreens
 import com.example.edistynytmobiili.view.AddCategoryScreen
@@ -54,7 +55,8 @@ fun NavigationComponents(
     drawerState : DrawerState,
     scope : CoroutineScope,
     navController: NavHostController,
-    currentBackStackEntry: NavBackStackEntry?
+    currentBackStackEntry: NavBackStackEntry?,
+    windowSizeInfo: WindowSizeInfo
 ) {
 
     val vm: NavigationViewModel = viewModel()
@@ -76,7 +78,8 @@ fun NavigationComponents(
                 drawerState = drawerState,
                 scope = scope,
                 navController = navController,
-                toggleDrawerEnable = { vm.toggleDrawerEnable() }
+                toggleDrawerEnable = { vm.toggleDrawerEnable() },
+                windowSizeInfo = windowSizeInfo
             )
         }
     }
@@ -85,7 +88,8 @@ fun NavigationComponents(
             drawerState = drawerState,
             scope = scope,
             navController = navController,
-            toggleDrawerEnable = { vm.toggleDrawerEnable() }
+            toggleDrawerEnable = { vm.toggleDrawerEnable() },
+            windowSizeInfo = windowSizeInfo
         )
 
 }
@@ -94,7 +98,8 @@ fun NavigationHost(
     drawerState : DrawerState,
     scope : CoroutineScope,
     navController: NavHostController,
-    toggleDrawerEnable: () -> Unit
+    toggleDrawerEnable: () -> Unit,
+    windowSizeInfo: WindowSizeInfo
 ) {
 
     NavHost(
@@ -152,7 +157,8 @@ fun NavigationHost(
                 //Screen-luokan EditCategory-objektilla on "routeWithId"-funktio, jolla toteutetaan parametrin välitys
                 goToEditCategory = { navController.navigate(Screen.EditCategory.routeWithId(it)) },
                 goToAddCategory = { navController.navigate(Screen.AddCategory.route) },
-                goToRentalItems = { navController.navigate(Screen.RentalItems.routeWithId(it)) }
+                goToRentalItems = { navController.navigate(Screen.RentalItems.routeWithId(it)) },
+                windowSizeInfo = windowSizeInfo
             )
         }
 
@@ -176,6 +182,7 @@ fun NavigationHost(
                 goToAddItem = { navController.navigate(Screen.AddRentalItem.routeWithId(it)) },
                 goToEditItem = { navController.navigate(Screen.EditRentalItem.routeWithId(it)) },
                 onBack = { navController.navigate(Screen.Categories.route) },
+                windowSizeInfo = windowSizeInfo
             )
         }
         composable(route = Screen.EditRentalItem.route) {

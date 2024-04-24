@@ -23,6 +23,7 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             EdistynytMobiiliTheme {
+                val windowSizeInfo = rememberWindowSize()
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
@@ -37,6 +38,7 @@ class MainActivity : ComponentActivity() {
                         scope = scope,
                         navController = navController,
                         currentBackStackEntry = currentBackStackEntry,
+                        windowSizeInfo = windowSizeInfo
 
                         )
 

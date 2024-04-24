@@ -2,7 +2,7 @@
 <resources>
     <string name="app_name">Edistynyt Mobiili</string>
     <string name="categories">Kategoriat</string>
-    <string name="log_out">Uloskirjautuminen</string>
+    <string name="log_out">Kirjaudu ulos</string>
     <string name="close">Sulje</string>
     <string name="open">Avaa</string>
     <string name="edit_name">Muokkaa nimeä</string>

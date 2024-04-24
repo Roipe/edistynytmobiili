@@ -12,6 +12,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -39,6 +42,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.edistynytmobiili.R
+import com.example.edistynytmobiili.WindowSizeInfo
+import com.example.edistynytmobiili.WindowType
 import com.example.edistynytmobiili.components.AddNewListing
 import com.example.edistynytmobiili.components.ActionOptionsSheet
 import com.example.edistynytmobiili.components.ExpandableListingItem
@@ -50,7 +55,9 @@ fun RentalItemsScreen (
     onRentComplete: (Int) -> Unit,
     goToAddItem:(Int) -> Unit,
     goToEditItem: (Int) -> Unit,
-    onBack: () -> Unit) {
+    onBack: () -> Unit,
+    windowSizeInfo: WindowSizeInfo
+) {
 
     val vm: RentalItemsViewModel = viewModel()
     val context = LocalContext.current
@@ -85,6 +92,7 @@ fun RentalItemsScreen (
                 )
 
                 else ->
+                    if (windowSizeInfo.widthInfo is WindowType.Compact || windowSizeInfo.widthInfo is WindowType.Medium)
                     LazyColumn(
                         contentPadding = PaddingValues(10.dp),
                         modifier = Modifier
@@ -120,8 +128,45 @@ fun RentalItemsScreen (
                             AddNewListing(name = stringResource(R.string.add_a_new_item), onClick = { goToAddItem(vm.categoryId) })
                             Spacer(modifier = Modifier.height(5.dp))
                         }
-
                     }
+                else
+                    LazyVerticalGrid(columns = GridCells.Fixed(2),
+                        contentPadding = PaddingValues(10.dp),
+                        modifier = Modifier
+                            .clip(RoundedCornerShape(16.dp))
+                            .background(MaterialTheme.colorScheme.surfaceVariant)
+                            .wrapContentSize()
+                    ) {
+                        items(vm.rentalItemsState.value.list) {item ->
+                            Spacer(modifier = Modifier.height(5.dp))
+                            Box(contentAlignment = Alignment.BottomEnd) {
+
+                                ExpandableListingItem(
+                                    name = item.name,
+                                    onOpen = { vm.setOpenItem(item) },
+                                    onClose = { vm.setOpenItem() },
+                                    optionMenu = { vm.setSelectedItem(item.name, item.id) },
+                                    isExpanded = vm.isOpenItem(item.id),
+                                    isAvailable = item.isFree)
+                                Button(
+                                    modifier = Modifier.padding(bottom = 5.dp, end = 10.dp),
+                                    onClick = {vm.rentItem(item.id)},
+                                    shape = RoundedCornerShape(5.dp),
+                                    enabled = item.isFree) {
+                                    Text(stringResource(R.string.rent))
+                                }
+                            }
+
+                            Spacer(modifier = Modifier.height(5.dp))
+
+                        }
+                        item {
+                            Spacer(modifier = Modifier.height(5.dp))
+                            AddNewListing(name = stringResource(R.string.add_a_new_item), onClick = { goToAddItem(vm.categoryId) })
+                            Spacer(modifier = Modifier.height(5.dp))
+                        }
+                    }
+
             }
             if(vm.deleteRentalItemState.value.id > 0) ConfirmRentalItemDelete(
                 onConfirm = { vm.deleteItemById() },
@@ -140,7 +185,8 @@ fun RentalItemsScreen (
                         },
                         onEdit = { goToEditItem(vm.rentalState.value.selectedItem.id) },
                         onDelete = { vm.setItemForRemoval(vm.rentalState.value.selectedItem.id) },
-                        onClose = { vm.setSelectedItem() }
+                        onClose = { vm.setSelectedItem() },
+                        windowSizeInfo = windowSizeInfo
 
                     )
                 }
